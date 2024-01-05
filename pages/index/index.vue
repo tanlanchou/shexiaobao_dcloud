@@ -11,7 +11,9 @@
 </template>
 
 <script>
-	import { tokenKey } from "@/common/enum.js"
+	import {
+		isLogin
+	} from '@/common/login.js'
 	export default {
 		data() {
 			return {
@@ -19,14 +21,7 @@
 			}
 		},
 		onReady() {
-			debugger;
-			const value = uni.getStorageSync(tokenKey);
-			if(!value || value == '') {
-					uni.redirectTo({
-						url: "login"
-					})
-			}
-			
+			isLogin();
 		},
 		onLoad() {
 			
