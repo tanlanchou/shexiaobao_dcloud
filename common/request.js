@@ -18,7 +18,7 @@ const common = {
 export default (options = {}) => {
 	options.url = BASE_URL + options.url
 	options.data = options.data || common.baseUrl
-	options.header = options.header || common.header
+	options.header = options.header && Object.create({}, common.header, options.header) || common.header
 	options.method = options.method || common.method
 	options.dataType = options.dataType || common.dataType
 	options.isShowLoading = true;
@@ -29,14 +29,15 @@ export default (options = {}) => {
 		}
 
 		options.header = {
-			authorization: toekn
+			authorization: token
 		};
 	}
 
 
 	if (options.isShowLoading) {
 		uni.showLoading({
-			title: '正在请求...'
+			title: '正在请求...',
+			mask: true
 		})
 	}
 	return new Promise((resolve, reject) => {
@@ -44,8 +45,13 @@ export default (options = {}) => {
 			...options,
 			success: res => {
 				console.log('res', res)
-				if (res.statusCode !== 200) {
-					return reject()
+				console.log('res.statusCode', res.statusCode)
+				console.log('res.statusCode !== 200', res.statusCode !== 200)
+				if (res.statusCode == 500) {
+					return reject(res.data);
+				}
+				if(res.statusCode == 403) {
+					return reject({ status: 403, message: "您没有权限访问这个接口" })
 				}
 				return resolve(res.data)
 			},

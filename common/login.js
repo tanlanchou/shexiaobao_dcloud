@@ -30,3 +30,8 @@ export const isUnLogin = function() {
 		return;
 	}
 }
+
+export const setToken = function(token) {
+	if(!token) return;
+	uni.setStorageSync(tokenKey, token);
+}

@@ -13,6 +13,19 @@
 </script>
 
 <style lang="scss">
+	@import url('static/icon.css');
+	@import url('static/animation.css');
+	@import url('static/main.css');
+
+	body {
+		background-color: #f1f1f1;
+	}
+
+	.no-line {
+		text-decoration: none;
+		color: inherit;
+	}
+
 	.uni-toast {
 		width: auto;
 		height: auto;
