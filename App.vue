@@ -46,6 +46,11 @@
 		margin-bottom: 10px;
 	}
 
+	.mb-30 {
+		margin-bottom: 30px;
+	}
+
+
 	.mt-30 {
 		margin-top: 30px !important;
 	}

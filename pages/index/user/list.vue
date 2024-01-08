@@ -3,19 +3,20 @@
 	<you-scroll ref="scroll" @onPullDown="onPullDown" @onLoadMore="onLoadMore">
 		<view class="cu-list menu sm-border card-menu mt-10">
 			<template v-for="(item, index) in list" :key="index">
-
-				<view class="cu-item">
+				<view class="cu-item" @click="jumpToUserDetail(item)">
 					<view class="content padding-tb-sm">
 						<view>
-							<text class="cuIcon-profile text-blue margin-right-xs">&nbsp;{{item.nickname}}</text> 
+							<text class="cuIcon-profile text-blue margin-right-xs">&nbsp;{{item.nickname}}</text>
 						</view>
 						<view class="text-gray text-sm">
-							<text class="cuIcon-phone margin-right-xs">{{item.phoneNumber}}</text> 
-							<text class="cuIcon-phone margin-right-xs">{{item.phoneNumber}}</text> 
+							<text class="cuIcon-phone margin-right-xs">{{item.phoneNumber}}</text>
+							<text class="cuIcon-profile margin-right-xs">{{item.role.name}}</text>
 						</view>
 					</view>
+					<view>
+						<text class="cuIcon-right margin-right-xs"></text>
+					</view>
 				</view>
-
 			</template>
 		</view>
 		<!-- <div class="loadingText">正在努力加载...</div> -->
@@ -68,6 +69,11 @@
 			onLoadMore() {
 				this.pageNumber += 1;
 				this.init();
+			},
+			jumpToUserDetail(item) {
+				uni.navigateTo({
+					url: `/pages/index/user/detail?id=${item.id}`
+				})
 			}
 		}
 	}

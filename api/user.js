@@ -8,6 +8,14 @@ export const getUserInfoApi = function() {
 	})
 }
 
+export const getUserInfoByIdApi = function(id) {
+	return request({
+		url: `/users/other/${id}`,
+		method: `get`,
+		isValid: true
+	})
+}
+
 export const getAllUserByPageApi = function(page) {
 	return request({
 		url: `/users/page/${page}`,
