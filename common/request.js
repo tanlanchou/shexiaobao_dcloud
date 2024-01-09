@@ -56,6 +56,7 @@ export default (options = {}) => {
 				return resolve(res.data)
 			},
 			fail: rej => {
+				console.error('rej', rej)
 				uni.showLoading({
 					title: '请求发生错误, 请稍后再试'
 				})

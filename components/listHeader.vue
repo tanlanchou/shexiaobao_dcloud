@@ -1,9 +1,10 @@
 <template>
 
-	<view class="cu-bar bg-white">
+	<view class="cu-bar bg-white input-border-bottom">
 		<view class="action">
 			<a href="javascript:;" class="no-line" @click="backTo">
-				<text class="cuIcon-back text-black">&nbsp;&nbsp;&nbsp;</text>
+				<text v-if="back" class="cuIcon-back text-blue">&nbsp;&nbsp;</text>
+				<text v-else class="cuIcon-titles text-blue">&nbsp;&nbsp;</text>
 				<text class="text-xl text-bold">{{ title }}</text>
 			</a>
 		</view>
@@ -26,9 +27,11 @@
 		},
 		methods: {
 			backTo() {
-				uni.navigateBack({
-					delta: 1
-				});
+				if (this.back) {
+					uni.navigateBack({
+						delta: 1
+					});
+				}
 			}
 		}
 	}

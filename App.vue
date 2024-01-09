@@ -31,6 +31,7 @@
 		height: auto;
 	}
 
+	// 内部样式重载
 	.uni-toast__content {
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
@@ -39,6 +40,10 @@
 		overflow: hidden;
 		word-break: break-all;
 		margin: 15px 15px;
+	}
+	
+	.t-drawer .uni-drawer__content  {
+		width: 100% !important;
 	}
 
 

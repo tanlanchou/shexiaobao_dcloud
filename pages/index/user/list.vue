@@ -27,6 +27,15 @@
 	import listHeader from '@/components/listHeader.vue'
 	import youScroll from '@/components/you-scroll.vue'
 	import {
+		errorToast,
+		loadingToast,
+		successToast
+	} from '@/common/toastHelper';
+	import {
+		isLogin
+	}
+	from '@/common/login'
+	import {
 		getAllUserByPageApi
 	} from '../../../api/user'
 	export default {
@@ -42,7 +51,9 @@
 			}
 		},
 		onReady() {
-			this.init()
+			if (!!isLogin()) {
+				this.init();
+			}
 		},
 		methods: {
 			init(isClear) {

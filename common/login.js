@@ -9,7 +9,7 @@ export const isLogin = function() {
 		
 		setTimeout(() => {
 			uni.redirectTo({
-				url: "../outer/login"
+				url: "/pages/outer/login"
 			})
 		}, 1000)
 
