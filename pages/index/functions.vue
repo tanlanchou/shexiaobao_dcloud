@@ -80,7 +80,7 @@
 		methods: {
 			goto(url) {
 				if (url) {
-					uni.redirectTo({
+					uni.navigateTo({
 						url: url
 					})
 				}

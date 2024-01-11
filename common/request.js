@@ -44,9 +44,7 @@ export default (options = {}) => {
 		uni.request({
 			...options,
 			success: res => {
-				console.log('res', res)
-				console.log('res.statusCode', res.statusCode)
-				console.log('res.statusCode !== 200', res.statusCode !== 200)
+				console.log("网络请求日志 debug:", res);
 				if (res.statusCode == 500) {
 					return reject(res.data);
 				}

@@ -63,7 +63,6 @@
 					errorToast(`名称长度必须超过1位且不超过20位`)
 					return
 				}
-				console.log(this.formData.value)
 				if (this.formData.value.lenght > 5) {
 					errorToast(`请至少选择一个权限`)
 					return

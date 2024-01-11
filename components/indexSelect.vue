@@ -46,7 +46,6 @@
 			default: true
 		}
 	});
-	console.log("select index props.list", props.list);
 
 	const test = ref(null);
 	const closeMySelf = function() {

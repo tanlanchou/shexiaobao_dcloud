@@ -5,7 +5,7 @@ export const userStatusForIndexSelect = [{
 	data: ["禁用"]
 }, {
 	letter: "W",
-	data: ["未验证"]
+	data: ["未通过验证"]
 }, {
 	letter: "Z",
 	data: ["正常"]
@@ -17,3 +17,5 @@ export const userStatus = {
 	disable: 3,
 	noVerification: 4
 }
+
+export const userStatusToWords = ["正常", "微信用户", "禁用", "未通过验证"];

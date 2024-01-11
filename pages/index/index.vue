@@ -59,7 +59,7 @@
 				<text class="text-xl text-black">我的功能</text>
 			</view>
 			<view class="action">
-				<a href="javascript:;" @click="jumpToAllFunction" class="text-lg">全部功能<text
+				<a href="javascript:;" @click="jumpToAllFunction" class="text-lg no-line">全部功能<text
 						class="cuIcon-right"></text></a>
 			</view>
 		</view>

@@ -82,8 +82,8 @@
 					errorToast(`密码长度必须超过3位且不超过20位`)
 					return
 				}
-				if (this.password.length < 4 || this.password.length > 10) {
-					errorToast(`昵称长度必须超过3位且不超过10位`)
+				if (this.nickName.length < 2 || this.nickName.length > 10) {
+					errorToast(`昵称长度必须超过2位且不超过10位`)
 					return
 				}
 				if (!phoneValid(this.phone)) {
@@ -99,7 +99,6 @@
 					code: this.code,
 					nickName: this.nickName
 				}).then(res => {
-					console.log(`register res`, res);
 					if (res.status == 200) {
 						successToast("注册成功, 为您跳转到登录");
 						uni.redirectTo({

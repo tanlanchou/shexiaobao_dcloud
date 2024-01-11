@@ -1,6 +1,7 @@
 <template>
 	<view class="you-scroll" ref="youScroll">
-		<view class="pullDown" :style="{ transform: 'translateY('+translateY+'px)', transition: isDown ? '0s' : '0.3s' }">
+		<view class="pullDown"
+			:style="{ transform: 'translateY('+translateY+'px)', transition: isDown ? '0s' : '0.3s' }">
 			<slot name="pullDown">
 				<img src="../static/pullDown.jpg" :class="{'down-icon': true,'animate': pullDownStatus == 3}" />
 				<span>
@@ -10,12 +11,16 @@
 				</span>
 			</slot>
 		</view>
-		<scroll-view class="you-scroll-inner" ref="youScrollInner" :scroll-top="scrollToTop" scroll-with-animation scroll-y :style="{ transform: 'translateY('+translateY+'px)', transition: isDown ? '0s' : 'transform 0.3s' }"
-		 @touchstart="startFn" @touchmove="moveFn" @touchend="endFn" @touchcancel="endFn" @scroll="scroll">
+		<scroll-view class="you-scroll-inner" ref="youScrollInner" :scroll-top="scrollToTop" scroll-with-animation
+			scroll-y
+			:style="{ transform: 'translateY('+translateY+'px)', transition: isDown ? '0s' : 'transform 0.3s' }"
+			@touchstart="startFn" @touchmove="moveFn" @touchend="endFn" @touchcancel="endFn" @scroll="scroll">
 			<view class="you-scroll-content">
 				<slot></slot>
 			</view>
+			<view style="height:130px; text-align: center; margin-top: 5px; color: cadetblue;">到底啦!!</view>
 		</scroll-view>
+
 	</view>
 </template>
 
@@ -64,76 +69,76 @@
 			},
 			moveFn(e) {
 				let view = uni.createSelectorQuery().in(this).select(".you-scroll-inner");
-				view.fields({ 
-					size: true, 
+				view.fields({
+					size: true,
 					scrollOffset: true
-				}, data => { 
+				}, data => {
 					this.scrollTop = data.scrollTop;
 					this.mPageY = e.changedTouches[0].pageY;
 					if (this.scrollTop <= 0) {
-						let translateY = ((this.mPageY - this.sPageY)  / 2) + this.pointY;
+						let translateY = ((this.mPageY - this.sPageY) / 2) + this.pointY;
 						this.translateY = (translateY < 0 ? 0 : translateY);
-						
-						if(this.pullDownStatus != 3) {
-							if(this.translateY < this.pullDownDistance) {
+
+						if (this.pullDownStatus != 3) {
+							if (this.translateY < this.pullDownDistance) {
 								this.pullDownStatus = 1;
-							} else if(this.translateY >= this.pullDownDistance) {
+							} else if (this.translateY >= this.pullDownDistance) {
 								this.pullDownStatus = 2;
 							}
 						}
 					}
 				}).exec();
-				
+
 			},
 			endFn(e) {
 				this.isDown = false;
 				this.ePageY = e.changedTouches[0].pageY;
 				setTimeout(() => {
 					this.translateY = this.translateY >= this.pullDownDistance ? this.pullDownDistance : 0;
-					if(this.pullDownStatus == 2) { // 开始刷新
+					if (this.pullDownStatus == 2) { // 开始刷新
 						this.pullDownStatus = 3;
-						this.$emit('onPullDown',this.endPullDown);
+						this.$emit('onPullDown', this.endPullDown);
 					}
-				},100)
-				
-				
+				}, 100)
+
+
 			},
 			endPullDown(mm) {
-				if(this.timeout) clearTimeout(this.timeout);
+				if (this.timeout) clearTimeout(this.timeout);
 				this.timeout = setTimeout(() => {
 					this.translateY = 0;
 					this.pullDownStatus = 1;
 				}, mm || 0);
 			},
-			prevent(e) {  
-				if(this.translateY > 0) {
+			prevent(e) {
+				if (this.translateY > 0) {
 					e.preventDefault();
 				}
 			},
 			scroll(e) {
-				this.$emit('onScroll',e);
+				this.$emit('onScroll', e);
 				this.oldTop = e.detail.scrollTop;
-				
-				if(this.timeout) clearTimeout(this.timeout);
+
+				if (this.timeout) clearTimeout(this.timeout);
 				this.timeout = setTimeout(() => {
 					this.scrolltolower(e);
-				},20);
+				}, 20);
 			},
 			scrolltolower(e) {
 				let view = uni.createSelectorQuery().in(this).select(".you-scroll-inner");
-				view.fields({ 
-					size: true, 					
+				view.fields({
+					size: true,
 					scrollOffset: true
-				}, data => { 
-					if(data.scrollTop >= (e.detail.scrollHeight - data.height - this.reachBottomDistance)) {
-						this.$emit('onLoadMore',e);
+				}, data => {
+					if (data.scrollTop >= (e.detail.scrollHeight - data.height - this.reachBottomDistance)) {
+						this.$emit('onLoadMore', e);
 					}
 				}).exec();
-				
+
 			},
-			isWeixinCient(){
+			isWeixinCient() {
 				var ua = navigator.userAgent.toLowerCase();
-				if(ua.match(/MicroMessenger/i)=="micromessenger") {
+				if (ua.match(/MicroMessenger/i) == "micromessenger") {
 					return true;
 				} else {
 					return false;
@@ -148,14 +153,14 @@
 		},
 		mounted() {
 			// #ifdef H5
-			if(this.isWeixinCient()) {
+			if (this.isWeixinCient()) {
 				document.body.addEventListener('touchmove', this.prevent);
 			}
 			// #endif
 		},
 		destroyed() {
 			// #ifdef H5
-			if(this.isWeixinCient()) {
+			if (this.isWeixinCient()) {
 				document.body.removeEventListener('touchmove', this.prevent);
 			}
 			// #endif
@@ -170,6 +175,7 @@
 		overflow: hidden;
 		position: relative;
 	}
+
 	.you-scroll .pullDown {
 		width: 100%;
 		height: 40px;
@@ -182,31 +188,35 @@
 		top: -40px;
 		left: 0;
 	}
+
 	.you-scroll .pullDown .down-icon {
 		width: 40px;
 		height: 32px;
 		display: inline-block;
 		vertical-align: middle;
 	}
+
 	.you-scroll .pullDown .animate {
 		-webkit-animation: scaleIcon 1s infinite linear;
 		-moz-animation: scaleIcon 1s infinite linear;
 		-ms-animation: scaleIcon 1s infinite linear;
 		animation: scaleIcon 1s infinite linear;
 	}
+
 	.you-scroll .pullDown span {
 		white-space: nowrap;
 		overflow: hidden;
 		display: inline-block;
 		vertical-align: middle;
 	}
-	
+
 	.you-scroll .you-scroll-inner {
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
 		position: relative;
 	}
+
 	.you-scroll-content {
 		overflow: hidden;
 	}
@@ -215,54 +225,69 @@
 		0% {
 			transform: scaleY(1);
 		}
+
 		40% {
 			transform: scaleY(0.8);
 		}
+
 		80% {
 			transform: scaleY(0.9);
 		}
+
 		100% {
 			transform: scaleY(1);
 		}
 	}
+
 	@-moz-keyframes scaleIcon {
 		0% {
 			transform: scaleY(1);
 		}
+
 		40% {
 			transform: scaleY(0.8);
 		}
+
 		80% {
 			transform: scaleY(0.9);
 		}
+
 		100% {
 			transform: scaleY(1);
 		}
 	}
+
 	@-ms-keyframes scaleIcon {
 		0% {
 			transform: scaleY(1);
 		}
+
 		40% {
 			transform: scaleY(0.8);
 		}
+
 		80% {
 			transform: scaleY(0.9);
 		}
+
 		100% {
 			transform: scaleY(1);
 		}
 	}
+
 	@keyframes scaleIcon {
 		0% {
 			transform: scaleY(1);
 		}
+
 		40% {
 			transform: scaleY(0.8);
 		}
+
 		80% {
 			transform: scaleY(0.9);
 		}
+
 		100% {
 			transform: scaleY(1);
 		}

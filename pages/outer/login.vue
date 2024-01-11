@@ -107,7 +107,6 @@
 				}
 			},
 			gotoForget() {
-				console.log("金国")
 				uni.redirectTo({
 					url: "forget"
 				})

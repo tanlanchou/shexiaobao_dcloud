@@ -1,8 +1,8 @@
 <template>
 
 	<list-header title="用户详情">
-		<button class="cu-btn bg-red round" @click="disableUser">
-			<text class="cuIcon-delete"></text> 禁用
+		<button class="cu-btn bg-purple" @click="update">
+			<text class="cuIcon-add"></text> 提交
 		</button>
 	</list-header>
 	<uni-card>
@@ -14,7 +14,7 @@
 							v-model="formData.nickname" placeholder="昵称" prefix-icon="contact"></uni-easyinput>
 					</uni-section>
 					<uni-section title="手机号" type="line">
-						<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
+						<uni-easyinput class="input-border-bottom" disabled="" type="text" :inputBorder="false"
 							v-model="formData.phoneNumber" placeholder="手机号" prefix-icon="phone"></uni-easyinput>
 					</uni-section>
 					<uni-section title="角色选择" type="line">
@@ -31,8 +31,10 @@
 						<text>{{ this.formData.lastLoginTime }}</text>
 					</uni-section>
 					<uni-section title="当前状态" type="line">
-						{{this.formData.status}}
-						<text>{{ userstatsToWords(this.formData.status) }}</text>
+						<text>{{ userstatsToWords(this.formData.status) }}</text> &nbsp; <button
+							class="cu-btn bg-green round" @click="this.$refs.statusListRef.open()">
+							<text class="cuIcon-vip"></text> 选择状态
+						</button>
 					</uni-section>
 				</view>
 			</view>
@@ -58,7 +60,8 @@
 	import youScroll from '@/components/you-scroll.vue'
 	import indexSelect from '@/components/indexSelect.vue'
 	import {
-		getUserInfoByIdApi
+		getUserInfoByIdApi,
+		updateUserInfoByIdApi
 	} from '@/api/user'
 	import {
 		getAllRoleApi
@@ -80,8 +83,12 @@
 	import moment from 'moment'
 	import {
 		userStatus,
-		userStatusForIndexSelect
-	} from '../../../common/enum'
+		userStatusForIndexSelect,
+		userStatusToWords
+	} from '@/common/enum'
+	import {
+		isLogin
+	} from '@/common/login'
 
 
 
@@ -104,35 +111,35 @@
 			}
 		},
 		onLoad(option) {
-			if (option && option.id) {
-				this.userStatusList = userStatusForIndexSelect;
-				this.id = option.id;
-				this.init();
+			if (isLogin()) {
+				if (option && option.id) {
+					this.userStatusList = userStatusForIndexSelect;
+					this.id = option.id;
+					this.init();
+				}
 			}
 		},
 		onReady(option) {
-			
-			let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
-			console.log(JSON.stringify(routes))
-			let curRoute = routes[routes.length - 1].route //获取当前页面路由
-			console.log(curRoute)
-			let curParam = routes[routes.length - 1].options; //获取路由参数
-			console.log("curParam", curParam);
+
+			// let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
+			// console.log(JSON.stringify(routes))
+			// let curRoute = routes[routes.length - 1].route //获取当前页面路由
+			// console.log(curRoute)
+			// let curParam = routes[routes.length - 1].options; //获取路由参数
+			// console.log("curParam", curParam);
+			//userStatusToWords
+
 		},
 		methods: {
 			userstatsToWords(status) {
-				console.log("status", status)
-				const keys = Object.keys(userStatus);
-				for (let i = 0; i < keys.length; i++) {
-					if (keys[i] == status) return keys[i];
+				if (status) {
+					return userStatusToWords[status - 1]
 				}
-				return "未知";
 			},
 			bindClick(source) {
 				const result = this.originRoleList.find(item => {
 					return item.name == source.name;
 				});
-
 				if (!result) {
 					errorToast(`未知错误,请退出后重试`);
 					return;
@@ -142,12 +149,55 @@
 				this.formData.roleId = result.id;
 			},
 			statusClick(source) {
-				const result = this.originRoleList.find(item => {
-					return item.name == source.name;
-				});
+				this.formData.status = userStatusToWords.indexOf(source.name) + 1
 			},
-			disableUser() {
+			update() {
 
+				if (this.id == -1) {
+					errorToast(`数据出错, 请退出后重试`);
+					return
+				}
+
+				console.log(`用户更新 this.formData.nickname`, this.formData.nickname.length);
+				console.log(`用户更新 this.formData.status`, this.formData.status);
+				console.log(`用户更新 this.formData.roleId`, this.formData.roleId);
+
+				if (!this.formData.nickname || this.formData.nickname.length < 2 || this.formData.nickname.length > 10) {
+					errorToast(`昵称长度必须超过2位且不超过10位`)
+					return
+				}
+
+				if (!this.formData.status) {
+					errorToast(`请选择用户状态`)
+					return
+				}
+
+				if (!this.formData.roleId) {
+					errorToast(`请选择用户角色`)
+					return
+				}
+
+
+
+				updateUserInfoByIdApi(this.id, {
+					nickname: this.formData.nickname,
+					roleId: this.formData.roleId,
+					status: this.formData.status
+				}).then(res => {
+					console.log(`用户编辑:`, res);
+					if (res.status == 200) {
+						successToast(`提交用户数据成功`);
+						setTimeout(() => {
+							uni.navigateBack({
+								delta: 1
+							});
+						}, 1000);
+					} else {
+						errorToast(res.message || "提交用户数据失败1")
+					}
+				}).catch(res => {
+					errorToast(res.message || "提交用户数据失败2")
+				})
 			},
 			init() {
 				getUserInfoByIdApi(this.id).then(res => {
@@ -171,7 +221,7 @@
 						this.roleList = filterArrayByIndex(arr);
 						this.roleDataLoadFlag = true
 					} else {
-						errorToast(res.message || "获取用户列表失败")
+						errorToast(res.message || "获取角色列表失败")
 					}
 				}).catch(res => {
 					console.error(res);
