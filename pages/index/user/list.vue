@@ -129,6 +129,7 @@
 		methods: {
 			filter() {
 				this.init(true);
+				this.hideModal();
 			},
 			statusClick(source) {
 				this.searchData.status = userStatusToWords.indexOf(source.name) + 1

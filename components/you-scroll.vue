@@ -18,7 +18,7 @@
 			<view class="you-scroll-content">
 				<slot></slot>
 			</view>
-			<view style="height:130px; text-align: center; margin-top: 5px; color: cadetblue;">到底啦!!</view>
+			<view style="height:130px; text-align: center; margin-top: 5px; color: cadetblue;"></view>
 		</scroll-view>
 
 	</view>

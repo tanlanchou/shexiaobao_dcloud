@@ -1,4 +1,7 @@
 export const tokenKey = "token";
+export const menuKey = "menu";
+export const userKey = "user";
+export const powerListKey = "power";
 export const maxPage = 20;
 export const userStatusForIndexSelect = [{
 	letter: "J",

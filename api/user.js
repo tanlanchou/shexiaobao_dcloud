@@ -42,3 +42,11 @@ export const updateUserInfoApi = function(data) {
 		data
 	})
 }
+
+export const getUserInfoApi = function(token) {
+	return request({
+		url: `/users/reload/token/${token}`,
+		method: `get`,
+		isValid: true
+	})
+}

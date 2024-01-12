@@ -9,7 +9,7 @@
 				</view>
 				<view class="padding-xs text-xl text-black">
 					<view>你好，{{ user.nickname }}</view>
-					<view class="cu-tag round line-green sm">角色 {{ user.roleId }}</view>
+					<view class="cu-tag round line-green sm">{{ user.role && user.role.name }}</view>
 				</view>
 			</view>
 		</view>
@@ -109,12 +109,30 @@
 
 <script>
 	import {
-		isLogin
+		clearSyncStorage,
+		getMenuStorage,
+		getUserStorage,
+		isLogin,
+		setMenuStorage,
+		setPowerStorage,
+		setUserStorage
 	} from '@/common/login.js'
 	import info from '@/components/info.vue'
 	import {
+		getMenuApi
+	} from '../../api/menu';
+	import {
+		getRolePowerList
+	} from '../../api/power';
+	import {
 		getUserInfoApi
 	} from '../../api/user';
+	import {
+		userKey
+	} from '../../common/enum';
+	import {
+		getCommonMenus
+	} from '../../common/power';
 	import {
 		errorToast,
 		successToast
@@ -123,97 +141,68 @@
 		data() {
 			return {
 				user: {},
-				iconList: [{
-						icon: 'moneybagfill',
-						color: 'blue',
-						badge: 0,
-						name: '产品入库'
-					}, {
-						icon: 'presentfill',
-						color: 'red',
-						badge: 0,
-						name: '订单开单',
-						bindtap: "bindZan"
-					}, {
-						icon: 'formfill',
-						color: 'purple',
-						badge: 0,
-						name: '所有产品',
-						bindtap: "showResource"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '用户管理',
-						bindtap: "bindPoint"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '附件管理',
-						bindtap: "bindPoint"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '品类管理',
-						bindtap: "bindPoint"
-					},
-					{
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '角色管理',
-						bindtap: "bindPoint"
-					}
-				],
-				iconOtherList: [{
-					icon: 'location',
-					color: 'blue',
-					badge: 0,
-					name: '地址管理'
-				}, {
-					icon: 'service',
-					color: 'blue',
-					badge: 0,
-					name: '电话客服',
-					bindtap: "bindZan"
-				}, {
-					icon: 'mark',
-					color: 'blue',
-					badge: 0,
-					name: '在线客服',
-					bindtap: "showResource"
-				}, {
-					icon: 'mail',
-					color: 'blue',
-					badge: 0,
-					name: '投诉',
-					bindtap: "bindCollect"
-				}, {
-					icon: 'settings',
-					color: 'blue',
-					badge: 0,
-					name: '设置',
-					bindtap: "bindZan"
-				}]
+				iconList: []
 			}
 		},
 		onReady() {
-			isLogin();
-			getUserInfoApi().then(res => {
-				if (res.status == 200) {
-					this.user = res.data;
-					this.user.img = this.user.img ? this.user.img :
-						'https://image.meiye.art/Fha6tqRTIwHtlLW3xuZBJj8ZXSX3?imageMogr2/thumbnail/450x/interlace/1';
+			if (!!isLogin()) {
+				this.getUserInfo();
+
+				const userLocalResult = getUserStorage();
+				console.log("userLocalResult", userLocalResult);
+				if (!userLocalResult) {
+					//清空, 怕清空不全
+					clearSyncStorage();
+
+					//需要同步
+					this.getUserInfo().then(() => {
+						this.getPowerInfo(this.user.roleId);
+					})
+					this.getMenuInfo();
 				} else {
-					errorToast(res.message || "登录失败，请稍后再试")
+					this.user = userLocalResult
+					const menus = getCommonMenus();
+					this.iconList = menus;
 				}
-			}).catch(res => {
-				errorToast(res.message || "登录失败，请稍后再试")
-			})
+			}
 		},
 		methods: {
+			getPowerInfo(id) {
+				return getRolePowerList(id).then(res => {
+					if (res.status === 200) {
+						setPowerStorage(res.data);
+					} else {
+						errorToast(res.message || `获取权限失败`);
+					}
+				}).catch(res => {
+					errorToast(res.message || `获取权限失败`);
+				})
+			},
+			getMenuInfo() {
+				return getMenuApi().then(res => {
+					if (res.status === 200) {
+						setMenuStorage(res.data);
+					} else {
+						errorToast(res.message || `获取菜单失败`);
+					}
+				}).catch(res => {
+					errorToast(res.message || `获取菜单失败`);
+				})
+			},
+			getUserInfo() {
+				return getUserInfoApi().then(res => {
+					if (res.status == 200) {
+						setUserStorage(JSON.parse(JSON.stringify(res.data)));
+						this.user = res.data;
+						this.user.img = this.user.img ? this.user.img :
+							'https://image.meiye.art/Fha6tqRTIwHtlLW3xuZBJj8ZXSX3?imageMogr2/thumbnail/450x/interlace/1';
+					} else {
+						errorToast(res.message || "获取用户信息失败，请稍后再试")
+					}
+				}).catch(res => {
+					errorToast(res.message || "获取用户信息失败，请稍后再试")
+				})
+			},
 			jumpToAllFunction() {
 				uni.navigateTo({
 					url: "/pages/index/functions"

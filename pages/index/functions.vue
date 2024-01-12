@@ -1,94 +1,63 @@
 <template>
 	<list-header title="全部功能"></list-header>
-	<view class="cu-list grid col-4 no-border text-black padding-bottom">
-		<view class="cu-item" v-for="(item,index) in iconList" :key="index" :bindtap="item.bindtap">
-			<a class="no-line" href="javascript:;" @click="goto(item.url)">
-				<view :class="['cuIcon-'+item.icon,'text-'+item.color,'text-shadow']" style="font-size: 56rpx;">
-					<view class="cu-tag badge" v-if="item.badge!=0">
-						<block v-if="item.badge!=1">{{item.badge>99?"99+":item.badge}}</block>
+
+	<uni-card title="系统功能" thumbnail="" v-if="iconList['90'] && iconList['90'].length > 0" note="Tips">
+		<view class="cu-list grid col-4 no-border text-black padding-bottom">
+			<view class="cu-item" v-for="(item, index) in iconList['90']" :key="index" :bindtap="item.bindtap">
+				<a class="no-line" href="javascript:;" @click="goto(item.url)">
+					<view :class="[item.icon, 'text-' + item.color, 'text-shadow']" style="font-size: 56rpx">
+						<view class="cu-tag badge" v-if="item.badge && item.badge != 0">
+							<block v-if="item.badge != 1">{{
+		          item.badge > 99 ? "99+" : item.badge
+		        }}</block>
+						</view>
 					</view>
-				</view>
-				<text>{{item.name}}</text>
-			</a>
+					<text>{{ item.name }}</text>
+				</a>
+			</view>
 		</view>
-	</view>
+	</uni-card>
+
 </template>
 
 <script>
 	import {
 		isLogin
-	} from '@/common/login.js'
-	import listHeader from '@/components/listHeader.vue'
+	} from "@/common/login.js";
+	import listHeader from "@/components/listHeader.vue";
+	import {
+		menuKey
+	} from "../../common/enum";
+	import {
+		getMenusGroupByType
+	} from "../../common/power";
 
 	export default {
 		components: {
-			listHeader
+			listHeader,
 		},
 		data() {
 			return {
-				iconList: [{
-						icon: 'moneybagfill',
-						color: 'blue',
-						badge: 0,
-						name: '产品入库'
-					}, {
-						icon: 'presentfill',
-						color: 'red',
-						badge: 0,
-						name: '订单开单',
-						bindtap: "bindZan"
-					}, {
-						icon: 'formfill',
-						color: 'purple',
-						badge: 0,
-						name: '所有产品',
-						bindtap: "showResource"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '用户管理',
-						url: `/pages/index/user/list`,
-						bindtap: "bindPoint"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '附件管理',
-						bindtap: "bindPoint"
-					}, {
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '品类管理',
-						bindtap: "bindPoint"
-					},
-					{
-						icon: 'shopfill',
-						color: 'green',
-						badge: 0,
-						name: '角色管理',
-						url: "/pages/index/role/roleList",
-						bindtap: "bindPoint"
-					}
-				],
-			}
+				iconList: [],
+			};
 		},
 		onReady() {
-			isLogin()
+			if (!!isLogin()) {
+				const result = getMenusGroupByType();
+				this.iconList = result;
+			}
 		},
 		methods: {
 			goto(url) {
 				if (url) {
 					uni.navigateTo({
-						url: url
-					})
+						url: url,
+					});
 				}
-			}
-		}
-	}
+			},
+		},
+	};
 </script>
 
 <style>
-
 </style>

@@ -66,6 +66,7 @@
 
 <script>
 	import {
+		clearSyncStorage,
 		isUnLogin,
 		setToken
 	} from '@/common/login.js'
@@ -82,6 +83,7 @@
 	} from '../../common/valid';
 	import cCode from "@/components/cCode.vue"
 	import * as crypto from 'crypto-js'
+
 	export default {
 		components: {
 			cCode
@@ -95,7 +97,9 @@
 			}
 		},
 		onReady() {
-			isUnLogin();
+			if (isUnLogin()) {
+				clearSyncStorage();
+			}
 		},
 		onLoad() {
 

@@ -1,21 +1,43 @@
 <script>
+	import {
+		getMenuApi
+	} from "@/api/menu.js";
+	import {
+		menuKey
+	} from "./common/enum";
+	import {
+		setMenuStorage
+	} from "./common/login";
+	import {
+		errorToast
+	} from "./common/toastHelper";
 	export default {
 		onLaunch: function() {
-			console.log('App Launch')
+			getMenuApi()
+				.then((res) => {
+					if (res.status === 200) {
+						setMenuStorage(res.data);
+					} else {
+						errorToast(res.message || `同步菜单失败`);
+					}
+				})
+				.catch((res) => {
+					errorToast(res.message || `同步菜单失败`);
+				});
 		},
 		onShow: function() {
-			console.log('App Show')
+			console.log("App Show");
 		},
 		onHide: function() {
-			console.log('App Hide')
-		}
-	}
+			console.log("App Hide");
+		},
+	};
 </script>
 
 <style lang="scss">
-	@import url('static/icon.css');
-	@import url('static/animation.css');
-	@import url('static/main.css');
+	@import url("static/icon.css");
+	@import url("static/animation.css");
+	@import url("static/main.css");
 
 	body {
 		background-color: #f1f1f1;
@@ -45,7 +67,6 @@
 	.t-drawer .uni-drawer__content {
 		width: 100% !important;
 	}
-
 
 	.mb-10 {
 		margin-bottom: 10px;
@@ -88,8 +109,8 @@
 	// button
 	.btn_green {
 		color: #ffffff;
-		backgroundColor: #1AAD19;
-		borderColor: #1AAD19
+		backgroundcolor: #1aad19;
+		bordercolor: #1aad19;
 	}
 
 	.outer {
@@ -117,15 +138,8 @@
 		}
 	}
 
+	// 全屏抽屉的css 开始 -------------------------------------------------
 
-
-
-
-
-
-
-	// 全屏抽屉的css 开始 -------------------------------------------------	
-	
 	.cu-list.menu>.cu-item .content>uni-image {
 		width: 2.6em;
 	}
@@ -181,7 +195,9 @@
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;
-		background-image: linear-gradient(90deg, rgba(0, 0, 0, 0.01), rgba(0, 0, 0, 0.6));
+		background-image: linear-gradient(90deg,
+				rgba(0, 0, 0, 0.01),
+				rgba(0, 0, 0, 0.6));
 		letter-spacing: 5px;
 		font-size: 50upx;
 		opacity: 0;
