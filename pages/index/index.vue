@@ -146,7 +146,7 @@
 		},
 		onReady() {
 			if (!!isLogin()) {
-				this.getUserInfo();
+				//this.getUserInfo();
 
 				const userLocalResult = getUserStorage();
 				console.log("userLocalResult", userLocalResult);

@@ -3,27 +3,64 @@
 		getMenuApi
 	} from "@/api/menu.js";
 	import {
+		getRolePowerList
+	} from "./api/power";
+	import {
+		getUserInfoApi,
+		reloadTokenApi
+	} from "./api/user";
+	import {
 		menuKey
 	} from "./common/enum";
 	import {
-		setMenuStorage
+		clearSyncStorage,
+		getToken,
+		setMenuStorage,
+		setPowerStorage,
+		setToken,
+		setUserStorage
 	} from "./common/login";
 	import {
 		errorToast
 	} from "./common/toastHelper";
 	export default {
 		onLaunch: function() {
-			getMenuApi()
-				.then((res) => {
+			const token = getToken();
+			if (token) {
+				reloadTokenApi(token).then(res => {
+					if (res.status === 200) {
+						setToken(res.data);
+						return getUserInfoApi();
+					} else {
+						throw new Error("刷新token失败");
+					}
+				}).then((res) => {
+					if (res && res.status === 200) {
+						let user = res.data;
+						user.img = user.img ? user.img :
+							'https://image.meiye.art/Fha6tqRTIwHtlLW3xuZBJj8ZXSX3?imageMogr2/thumbnail/450x/interlace/1';
+						setUserStorage(JSON.parse(JSON.stringify(user)));
+						return getRolePowerList(user.id);
+					} else {
+						throw new Error("同步用户失败");
+					}
+				}).then(res => {
+					if (res && res.status === 200) {
+						setPowerStorage(res.data);
+						return getMenuApi();
+					} else {
+						throw new Error("同步权限失败");
+					}
+				}).then(res => {
 					if (res.status === 200) {
 						setMenuStorage(res.data);
 					} else {
-						errorToast(res.message || `同步菜单失败`);
+						throw new Error("同步菜单失败");
 					}
+				}).catch(res => {
+					errorToast(res.message);
 				})
-				.catch((res) => {
-					errorToast(res.message || `同步菜单失败`);
-				});
+			}
 		},
 		onShow: function() {
 			console.log("App Show");

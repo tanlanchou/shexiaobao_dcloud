@@ -43,7 +43,7 @@ export const updateUserInfoApi = function(data) {
 	})
 }
 
-export const getUserInfoApi = function(token) {
+export const reloadTokenApi = function(token) {
 	return request({
 		url: `/users/reload/token/${token}`,
 		method: `get`,
