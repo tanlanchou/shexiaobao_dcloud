@@ -17,7 +17,7 @@ const common = {
 }
 export default (options = {}) => {
 	options.url = BASE_URL + options.url
-	options.data = options.data || common.baseUrl
+	options.data = options.data || {}
 	options.header = options.header && Object.create({}, common.header, options.header) || common.header
 	options.method = options.method || common.method
 	options.dataType = options.dataType || common.dataType
@@ -40,6 +40,7 @@ export default (options = {}) => {
 			mask: true
 		})
 	}
+
 	return new Promise((resolve, reject) => {
 		uni.request({
 			...options,
@@ -48,8 +49,11 @@ export default (options = {}) => {
 				if (res.statusCode == 500) {
 					return reject(res.data);
 				}
-				if(res.statusCode == 403) {
-					return reject({ status: 403, message: "您没有权限访问这个接口" })
+				if (res.statusCode == 403) {
+					return reject({
+						status: 403,
+						message: "您没有权限访问这个接口"
+					})
 				}
 				return resolve(res.data)
 			},

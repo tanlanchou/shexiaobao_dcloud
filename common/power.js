@@ -30,3 +30,20 @@ export const checkPower = function(key) {
 	const result = powers.find(item => item.powerName == key)
 	return !!result;
 }
+
+export const checkPowerCommon = function(key) {
+	const powerBase = key;
+	const findAllPowerName = `${powerBase}_findAll`;
+	const createPowerName = `${powerBase}_create`;
+	const findOnePowerName = `${powerBase}_findOne`;
+	const updatePowerName = `${powerBase}_update`;
+	const deletePowerName = `${powerBase}_delete`;
+
+	return {
+		findAllPowerEnable: checkPower(findAllPowerName),
+		createPowerEnable: checkPower(createPowerName),
+		findOnePowerEnable: checkPower(findOnePowerName),
+		updatePowerEnable: checkPower(updatePowerName),
+		deletePowerEnable: checkPower(deletePowerName)
+	}
+}

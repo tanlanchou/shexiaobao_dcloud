@@ -1,10 +1,11 @@
 <template>
 	<view>
 		<list-header :title="myTitle">
-			<button v-if="updateEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;" @click="add">
+			<button v-if="updateEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
+				@click="add">
 				<text class="cuIcon-add"></text> 提交
 			</button>
-			<button v-if="deleteEnable" class="cu-btn bg-red" @click="deleteItem">
+			<button v-if="deleteEnable && _id" class="cu-btn bg-red" @click="deleteItem">
 				<text class="cuIcon-delete"></text> 删除
 			</button>
 		</list-header>
@@ -17,10 +18,21 @@
 								v-model="formData.name" placeholder="请输入名称" prefix-icon="font"></uni-easyinput>
 						</uni-section>
 					</view>
+					<view class="uni-padding-wrap mb-30" v-if="powerBase == 'ProductQualityController'">
+						<uni-section title="描述" type="line">
+							<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
+								v-model="formData.desc" placeholder="请输入描述" prefix-icon="font"></uni-easyinput>
+						</uni-section>
+					</view>
 				</view>
 			</form>
 		</uni-card>
 	</view>
+
+	<uni-popup ref="alertDialog" type="dialog">
+		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
+			@confirm="dialogConfirm"></uni-popup-dialog>
+	</uni-popup>
 </template>
 
 <script setup>
@@ -101,12 +113,24 @@
 	}
 
 	const add = function() {
+
+		const data = {};
+
 		const name = _.get(formData.value, "name");
-		console.log(`name`, name)
-		console.log(`name.length`, name.length)
 		if (!name || name.length < 2 || name.length > 15) {
 			errorToast(`名称长度必须超过1位且不超过15位`);
 			return;
+		}
+
+		data["name"] = name;
+
+		if (powerBase == 'ProductQualityController') {
+			const desc = _.get(formData.value, "desc");
+			if (!desc || desc.length < 2 || desc.length > 50) {
+				errorToast(`名称长度必须超过1位且不超过50位`);
+				return;
+			}
+			data["desc"] = desc;
 		}
 
 		let url = _.get(props, "options.request.create") || `/${_.get(props, "options.name")}`
@@ -116,18 +140,14 @@
 				url: `${url}/${_id}`,
 				method: `put`,
 				isValid: true,
-				data: {
-					name
-				}
+				data
 			});
 		} else {
 			r = requst({
 				url,
 				method: `post`,
 				isValid: true,
-				data: {
-					name
-				}
+				data
 			});
 		}
 
@@ -147,7 +167,28 @@
 		})
 	}
 
-	const deleteItem = function() {
+
+
+	const init = function() {
+		if (_id) {
+			getOne().then(res => {
+				if (res.status === 200) {
+					formData.value = res.data;
+				} else {
+					errorToast(res.message || `${_title}查询错误`)
+				}
+			}).catch(res => {
+				errorToast(res.message || `${_title}查询错误`)
+			})
+		} else {
+
+		}
+	}
+	init();
+
+	//删除功能
+	const alertDialog = ref(null);
+	const dialogConfirm = function() {
 		let url = _.get(props, "options.request.delete") || `/${_.get(props, "options.name")}`
 		requst({
 			url: `${url}/${_id}`,
@@ -169,20 +210,7 @@
 		})
 	}
 
-	const init = function() {
-		if (_id) {
-			getOne().then(res => {
-				if (res.status === 200) {
-					formData.value.name = res.data.name;
-				} else {
-					errorToast(res.message || `${_title}查询错误`)
-				}
-			}).catch(res => {
-				errorToast(res.message || `${_title}查询错误`)
-			})
-		} else {
-
-		}
+	const deleteItem = function() {
+		alertDialog.value.open()
 	}
-	init();
 </script>

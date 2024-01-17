@@ -1,10 +1,10 @@
 <template>
-	<uni-drawer ref="test" class="t-drawer" mode="right" :mask-click="false">
+	<uni-drawer style="z-index: 10000;" ref="test" class="t-drawer" mode="right" :mask-click="false">
 		<list-header :title="title" :back="false">
-			<button v-if="!isSingle" class="cu-btn bg-red" @click="bindClick">
-				<text class="cuIcon-close"></text> 确定
+			<button v-if="!isSingle" class="cu-btn bg-purple" @click="bindMClick">
+				<text class="cuIcon-add"></text> 确定
 			</button>
-			<button class="cu-btn bg-red" @click="closeMySelf">
+			<button class="cu-btn bg-red" @click="closeMySelf" style="margin-left: 5px;">
 				<text class="cuIcon-close"></text> 关闭
 			</button>
 		</list-header>
@@ -68,13 +68,20 @@
 		if (props.isSingle) {
 			emits('indexSelect', e.item);
 			closeMySelf();
+		}
+		else {
+			selectList = e.select;
+		}
+	}
+
+	let selectList;
+	const bindMClick = function() {
+		if (selectList.length > 0) {
+			console.log(selectList)
+			emits('indexSelect', selectList);
+			closeMySelf();
 		} else {
-			if (e.select.length > 0) {
-				emits('indexSelect', e.select);
-				closeMySelf();
-			} else {
-				errorToast("请至少选择一项")
-			}
+			errorToast("请至少选择一项")
 		}
 	}
 

@@ -5,7 +5,7 @@
 				@click="add">
 				<text class="cuIcon-add"></text> 提交
 			</button>
-			<button v-if="deleteEnable" class="cu-btn bg-red" @click="deleteItem">
+			<button v-if="deleteEnable && _id > 0" class="cu-btn bg-red" @click="deleteItem">
 				<text class="cuIcon-delete"></text> 删除
 			</button>
 		</list-header>
@@ -18,17 +18,25 @@
 								v-model="formData.name" placeholder="请输入名称" prefix-icon="font"></uni-easyinput>
 						</uni-section>
 					</view>
-					<view class="uni-padding-wrap mb-30">
+					<view class="uni-padding-wrap mb-30" v-if="formData.parentId != 0">
 						<uni-section title="父节点" type="line">
-
+							<text>{{formData.parentName}}</text> &nbsp; <button class="cu-btn bg-green round"
+								@click="_treeListRef.open()">
+								<text class="cuIcon-selection"></text> 选择父节点
+							</button>
 						</uni-section>
 					</view>
 				</view>
 			</form>
 		</uni-card>
 	</view>
-	<index-select ref="roleListRef" title="选择父节点" v-if="_dataLoadFlag" :list="list" :isSingle="true"
+	<index-select ref="_treeListRef" title="选择父节点" v-if="_dataLoadFlag" :list="_list" :isSingle="true"
 		:isShowSelect="true" @indexSelect="bindClick"></index-select>
+
+	<uni-popup ref="alertDialog" type="dialog">
+		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
+			@confirm="dialogConfirm"></uni-popup-dialog>
+	</uni-popup>
 </template>
 
 <script setup>
@@ -68,11 +76,19 @@
 		}
 	});
 
+
 	//参数
 	const _dataLoadFlag = ref(false);
 	const _title = _.get(props, "title");
 	const _id = _.get(props, "id");
 	const _list = ref([]);
+	const _treeListRef = ref(null);
+	const _originRoleList = ref([]);
+	const defaultParent = {
+		id: 0,
+		name: "无",
+		parentId: 0
+	}
 
 
 	//权限
@@ -95,6 +111,7 @@
 			delta: 1
 		});
 	}
+
 
 	//判断
 	const formData = ref({});
@@ -135,6 +152,9 @@
 			return;
 		}
 
+		let parentId = _.get(formData.value, "parentId");
+		if (!parentId) parentId = 0;
+
 		let url = _.get(props, "options.request.create") || `/${_.get(props, "options.name")}`
 		let r;
 		if (_id) {
@@ -143,7 +163,8 @@
 				method: `put`,
 				isValid: true,
 				data: {
-					name
+					name,
+					parentId
 				}
 			});
 		} else {
@@ -152,7 +173,8 @@
 				method: `post`,
 				isValid: true,
 				data: {
-					name
+					name,
+					parentId
 				}
 			});
 		}
@@ -172,12 +194,15 @@
 			errorToast(res.message || `${_title}提交错误`)
 		})
 	}
-
-	const deleteItem = function() {
+	
+	
+	//删除功能
+	const alertDialog = ref(null);
+	const dialogConfirm = function() {
 		let url = _.get(props, "options.request.delete") || `/${_.get(props, "options.name")}`
 		requst({
 			url: `${url}/${_id}`,
-			method: `delete`,
+			method: `DELETE`,
 			isValid: true
 		}).then(res => {
 			if (res.status === 200) {
@@ -193,6 +218,10 @@
 		}).catch(res => {
 			errorToast(res.message || `${_title}删除错误`)
 		})
+	}
+
+	const deleteItem = function() {
+		alertDialog.value.open()
 	}
 
 	const init = function() {
@@ -215,18 +244,60 @@
 					return item.parentId == 0;
 				});
 
-				console.log("result", result)
+				result.push(defaultParent);
+
+				_originRoleList.value = JSON.parse(JSON.stringify(result));
+
 				result = result.map(item => {
-					console.log("item", item);
 					return item.name;
 				})
 
-				this.list = filterArrayByIndex(result);
+				_list.value = filterArrayByIndex(result);
 				_dataLoadFlag.value = true;
+				if (_id) {
+					setTimeout(() => {
+						const result = _originRoleList.value.find(item => {
+							return item.id == formData.value.parentId;
+						});
+
+						if (!result) {
+							errorToast(`找不到父节点`);
+							bindClick(defaultParent);
+							return;
+						}
+
+						bindClick(result);
+					}, 1);
+				} else {
+					// bindClick(defaultParent);
+				}
 			} else {
 				errorToast(res.message || `${_title}查询错误`)
 			}
 		})
 	}
 	init();
+
+	//
+	const bindClick = function(source) {
+		if (source.id == 0) {
+			formData.value.parentName = source.name;
+			formData.value.parentId = source.id;
+		} else {
+			const result = _originRoleList.value.find(item => {
+				return item.name == source.name;
+			});
+
+			if (!result) {
+				errorToast(`未知错误,请退出后重试`);
+				return;
+			}
+
+			formData.value.parentName = result.name;
+			formData.value.parentId = result.id;
+		}
+
+
+
+	}
 </script>

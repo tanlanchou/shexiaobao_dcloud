@@ -25,6 +25,14 @@ export const getAllUserByPageApi = function(page, data) {
 	})
 }
 
+export const getAllUserApi = function() {
+	return request({
+		url: `/users`,
+		method: `get`,
+		isValid: true,
+	})
+}
+
 export const updateUserInfoByIdApi = function(id, data) {
 	return request({
 		url: `/users/other/${id}`,

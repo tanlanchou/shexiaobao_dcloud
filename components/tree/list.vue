@@ -18,7 +18,8 @@
 					<view class="cu-item" @click="findOnePowerEnable && jumpToUserDetail(item)">
 						<view class="content padding-tb-sm">
 							<view>
-								<text class="cuIcon-text text-blue margin-right-xs"
+								<text class="text-blue margin-right-xs"
+									:class="!!item.parentId ? 'cuIcon-move' : 'cuIcon-refresharrow'"
 									:style="{ paddingLeft: (!!item.parentId ? 25 : 0) + 'px' }">&nbsp;{{item.name}}</text>
 							</view>
 						</view>
@@ -165,7 +166,7 @@
 			errorToast(res.message || `${title}列表查询错误`)
 		}).finally(() => {
 			hideModal();
-			if(done) {
+			if (done) {
 				done();
 			}
 		})
@@ -194,7 +195,7 @@
 	onShow(() => {
 		init();
 	})
-	
+
 	const onPullDown = function(done) {
 		init(done);
 	}

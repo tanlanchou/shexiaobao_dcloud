@@ -12,7 +12,7 @@
 			</button>
 		</list-header>
 
-		<scroll-view scroll-y="true">
+		<you-scroll @onPullDown="onPullDown" scroll-y="true">
 			<view class="cu-list menu sm-border card-menu mt-10">
 				<template v-for="(item, index) in list" :key="index">
 					<view class="cu-item" @click="findOnePowerEnable && jumpToUserDetail(item)">
@@ -27,7 +27,7 @@
 					</view>
 				</template>
 			</view>
-		</scroll-view>
+		</you-scroll>
 
 
 	</view>
@@ -73,6 +73,7 @@
 	import {
 		onShow
 	} from "@dcloudio/uni-app";
+	import youScroll from "@/components/you-scroll.vue"
 
 	isLogin();
 
@@ -112,6 +113,7 @@
 	const createPowerEnable = ref(checkPower(createPowerName));
 	const findOnePowerEnable = ref(checkPower(findOnePowerName));
 	console.log("createPowerEnable", createPowerEnable.value);
+	console.log("createPowerName", createPowerName);
 
 	//参数
 	const list = ref([]);
@@ -140,7 +142,11 @@
 		//后续可能存在分页情况
 	}
 
-	const init = function() {
+	const onPullDown = function(done) {
+		init(done);
+	}
+
+	const init = function(done) {
 		getList({
 			name: search.value.name
 		}).then(res => {
@@ -154,6 +160,9 @@
 			errorToast(res.message || `${title}列表查询错误`)
 		}).finally(() => {
 			hideModal();
+			if (typeof done === "function") {
+				done();
+			}
 		})
 	}
 

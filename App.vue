@@ -79,6 +79,15 @@
 	body {
 		background-color: #f1f1f1;
 	}
+	
+	//header
+	.header_fixed {
+		position: fixed;
+		top: 0;
+		width: 100%;
+		z-index: 9999;
+	}
+	
 
 	.no-line {
 		text-decoration: none;
@@ -107,6 +116,10 @@
 
 	.mb-10 {
 		margin-bottom: 10px;
+	}
+	
+	.mb-20 {
+		margin-bottom: 20px;
 	}
 
 	.mb-30 {
@@ -142,6 +155,23 @@
 		border: none !important;
 		box-shadow: none !important;
 	}
+
+	.form_card .uni-card__content {
+		padding: 0 !important;
+	}
+	
+	.form_card .uni-card__content .cu-form-group {
+		padding: 0 !important;
+	}
+	
+	.form_card .uni-card__content .cu-form-group .uni-padding-wrap {
+		padding: 0 10px !important;
+	}
+	
+	.card_fixed {
+		margin-top: 60px !important;
+	}
+
 
 	// button
 	.btn_green {
