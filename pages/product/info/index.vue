@@ -85,9 +85,13 @@
 				<uni-data-checkbox class="smallCheck" mode="tag" v-model="search.type"
 					:localdata="productTypeMap"></uni-data-checkbox>
 			</view>
-			<view class="cu-form-group align-start">
-				<view class="title">排序</view>
-				<picker-single v-model="search.order" name="productOrderSearch"></picker-single>
+			<view class="cu-form-group">
+				<view class="title">适用人群</view>
+				<picker-single v-model="search.forPeople" name="productForPeopleMap"></picker-single>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">尺码</view>
+				<picker-single v-model="search.forPeople" name="productSizeMap"></picker-single>
 			</view>
 		</view>
 		<uni-card>
@@ -161,7 +165,7 @@
 		productForPeopleMap,
 		productSizeMap
 	} from "@/common/enum.js"
-	
+
 	isLogin();
 
 
