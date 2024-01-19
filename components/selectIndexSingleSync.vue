@@ -82,7 +82,7 @@
 	}
 
 	const openTypeIndex = function() {
-		if (props.ljz && typeList.value.length > 0) {
+		if (props.ljz && typeList.value.length == 0) {
 			getTypeList().then(() => {
 				typeDataLoadFlag.value = true;
 				nextTick(() => {

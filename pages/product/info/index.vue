@@ -39,7 +39,7 @@
 				<view class="title">名称</view>
 				<input type="text" v-model="search.title" />
 			</view>
-			<select-index-single-sync title="品牌" req="false" name="getProductTypeAllApi" v-model="search.type">
+			<select-index-single-sync title="品牌" :req="false" name="getProductTypeAllApi" v-model="search.type">
 			</select-index-single-sync>
 		</view>
 		<uni-card>
