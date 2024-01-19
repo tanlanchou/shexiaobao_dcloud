@@ -13,7 +13,9 @@
 
 <script setup>
 	import {
-		getProductTypeAllApi
+		getProductTypeAllApi,
+		getProductQualityAllApi,
+		getProductStorehouseAllApi
 	} from "@/api/product.info";
 	import indexSelect from '@/components/indexSelect.vue'
 	import {
@@ -31,7 +33,9 @@
 
 	//集合
 	const a = {
-		getProductTypeAllApi
+		getProductTypeAllApi,
+		getProductQualityAllApi,
+		getProductStorehouseAllApi
 	}
 
 	const props = defineProps({
@@ -54,6 +58,9 @@
 		ljz: {
 			type: Boolean,
 			default: true
+		},
+		otherName: {
+			type: String
 		}
 	});
 
@@ -71,7 +78,13 @@
 		return a[props.name]().then(res => {
 			if (res.status == 200) {
 				typeOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
+				let result;
+				if (props.otherName) {
+					result = filterArrayByIndex(res.data.map(item =>
+						`${item.name}---${item[props.otherName]}`));
+				} else {
+					result = filterArrayByIndex(res.data.map(item => item.name));
+				}
 				typeList.value = result;
 			} else {
 				errorToast(res.message || `获取品牌错误`)
@@ -97,7 +110,15 @@
 	const typeBindClick = function(source) {
 		let str = source.name;
 		try {
-			const result = typeOriginList.value.find(item => item.name == str);
+
+			let result;
+			if (props.otherName) {
+				str = str.split('---')[0];
+			}
+
+			result = typeOriginList.value.find(item => item.name == str);
+
+
 			if (result) {
 				formType.value = result;
 				emit('update:modelValue', result.id);

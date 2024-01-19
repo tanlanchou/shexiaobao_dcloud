@@ -117,6 +117,8 @@
 		width: auto;
 		height: auto;
 	}
+	
+	//input
 
 	// 内部样式重载
 	.uni-toast__content {

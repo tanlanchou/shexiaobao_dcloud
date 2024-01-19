@@ -62,4 +62,6 @@ export const productTypeMap = [{
 
 export const productForPeopleMap = ["通用", "女", "男"];
 export const productSizeMap = ["超迷你", "迷你", "小号", "中号", "大号", "超大号"];
-export const productOrderSearch = ["入库时间降序", "入库时间升序", "到达时间降序", "到达时间升序"];
+export const productOrderSearch = ["入库时间降序", "入库时间升序", "到达时间降序", "到达时间升序", "成本价降序", "成本价升序", "销售价降序", "销售价升序", "同行价降序",
+	"同行价升序", "直播价降序", "直播价升序", "专柜价降序", "专柜价升序"
+];

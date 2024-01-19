@@ -35,51 +35,63 @@
 				<view class="title">排序</view>
 				<picker-single v-model="search.order" name="productOrderSearch"></picker-single>
 			</view>
-			<view class="cu-form-group  ">
+			<view class="cu-form-group">
 				<view class="title">名称</view>
 				<input type="text" v-model="search.title" />
 			</view>
 			<select-index-single-sync title="品牌" :req="false" name="getProductTypeAllApi" v-model="search.type">
 			</select-index-single-sync>
+			<picker-muplt title="品类" :req="false" name="getProductCategoryAllApi"
+				v-model="search.category"></picker-muplt>
+			<select-index-single-sync title="成色" :req="false" otherName="desc" name="getProductQualityAllApi"
+				v-model="search.quality"></select-index-single-sync>
+			<view class="cu-form-group">
+				<view class="title">来源</view>
+				<uni-data-checkbox class="smallCheck" mode="tag" v-model="search.productOriginId"
+					:localdata="originList"></uni-data-checkbox>
+			</view>
+			<select-index-single-sync title="仓库" :req="false" name="getProductStorehouseAllApi"
+				v-model="search.quality"></select-index-single-sync>
+			<view class="cu-form-group">
+				<view class="title">成本价</view>
+				<input style="text-align: center;" v-model="search.minCostPrice" placeholder="最小值" type="number">-<input
+					v-model="search.maxCostPrice" style="text-align: center;" placeholder="最大值" type="number">
+			</view>
+			<view class="cu-form-group">
+				<view class="title">销售价</view>
+				<input style="text-align: center;" v-model="search.minSellingPrice" placeholder="最小值"
+					type="number">-<input v-model="search.maxSellingPrice" style="text-align: center;" placeholder="最大值"
+					type="number">
+			</view>
+			<view class="cu-form-group">
+				<view class="title">同行价</view>
+				<input style="text-align: center;" v-model="search.minPeerPrice" placeholder="最小值" type="number">-<input
+					v-model="search.maxPeerPrice" style="text-align: center;" placeholder="最大值" type="number">
+			</view>
+			<view class="cu-form-group">
+				<view class="title">直播价</view>
+				<input style="text-align: center;" v-model="search.minLiveBroadcastPrice" placeholder="最小值"
+					type="number">-<input v-model="search.maxLiveBroadcastPrice" style="text-align: center;"
+					placeholder="最大值" type="number">
+			</view>
+			<view class="cu-form-group">
+				<view class="title">专柜价</view>
+				<input style="text-align: center;" v-model="search.minCounterPrice" placeholder="最小值"
+					type="number">-<input v-model="search.maxCounterPrice" style="text-align: center;" placeholder="最大值"
+					type="number">
+			</view>
+			<view class="cu-form-group">
+				<view class="title">类型</view>
+				<uni-data-checkbox class="smallCheck" mode="tag" v-model="search.type"
+					:localdata="productTypeMap"></uni-data-checkbox>
+			</view>
+			<view class="cu-form-group align-start">
+				<view class="title">排序</view>
+				<picker-single v-model="search.order" name="productOrderSearch"></picker-single>
+			</view>
 		</view>
 		<uni-card>
 
-			<uni-section title="名称" type="line">
-				<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false" v-model="search.name"
-					placeholder="名称" prefix-icon="contact"></uni-easyinput>
-			</uni-section>
-			<uni-section title="产品编号" type="line">
-				<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false" v-model="search.no"
-					placeholder="产品编号" prefix-icon="contact"></uni-easyinput>
-			</uni-section>
-			<uni-section title="维护人选择" type="line">
-				<text>{{searchUser.nickname}}</text> &nbsp; <button class="cu-btn bg-green round"
-					@click="openUserIndex">
-					<text class="cuIcon-selection"></text> 选择维护人
-				</button>
-			</uni-section>
-			<uni-section title="产品来源" type="line">
-				<text>{{searchOrigin.name}}</text> &nbsp; <button class="cu-btn bg-green round"
-					@click="openOriginIndex">
-					<text class="cuIcon-selection"></text> 选择来源
-				</button>
-			</uni-section>
-			<uni-section title="产品意向" type="line">
-				<uni-data-checkbox mode="tag" v-model="search.intention_type"
-					:localdata="intentionTypeMap"></uni-data-checkbox>
-			</uni-section>
-			<uni-section title="产品标签" type="line">
-				<text v-text="search.customer_tag"></text> &nbsp; <button class="cu-btn bg-green round"
-					@click="openTagIndex">
-					<text class="cuIcon-selection"></text> 选择标签
-				</button>
-			</uni-section>
-			<uni-section title="类型" type="line">
-				<uni-data-checkbox mode="tag" v-model="search.type" :localdata="customerMap"></uni-data-checkbox>
-			</uni-section>
-			<uni-section title="性别" type="line">
-				<uni-data-checkbox mode="tag" v-model="search.sex" :localdata="sexMap"></uni-data-checkbox>
-			</uni-section>
 			<view class="mt-20 mb-10">
 				<button class="cu-btn bg-purple" @click="getList(true)">
 					<text class="cuIcon-filter"></text> 筛选
@@ -91,15 +103,6 @@
 			</view>
 		</uni-card>
 	</scroll-view>
-
-	<index-select ref="userListRef" title="维护人选择" v-if="userDataLoadFlag" :list="userList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="userBindClick"></index-select>
-
-	<index-select ref="tagListRef" title="产品标签" v-if="tagDataLoadFlag" :list="tagList" :isSingle="false"
-		:isShowSelect="true" @indexSelect="tagBindClick"></index-select>
-
-	<index-select ref="originListRef" title="产品来源" v-if="originDataLoadFlag" :list="originList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="originBindClick"></index-select>
 </template>
 
 <script setup>
@@ -146,11 +149,19 @@
 		getCustomerTagAllApi
 	} from "@/api/customerTag";
 	import {
-		getProductAllInfoApi
+		getProductAllInfoApi,
+		getProductOriginAllApi
 	} from "@/api/product.info";
 
 	import pickerSingle from "@/components/pickerSingle.vue";
 	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
+	import pickerMuplt from "@/components/pickerMuplt.vue";
+	import {
+		productTypeMap,
+		productForPeopleMap,
+		productSizeMap
+	} from "@/common/enum.js"
+	
 	isLogin();
 
 
@@ -186,130 +197,26 @@
 	const search = ref({});
 	const searchUser = ref({});
 
-	//////////////////////////// 维护人API
-	const userListRef = ref(null);
-	const userDataLoadFlag = ref(false);
-	const userList = ref([]);
-	const userOriginList = ref([]);
-
-	const getUserList = function() {
-		getAllUserApi().then(res => {
-			if (res.status == 200) {
-				userOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => `${item.nickname}(${item.phoneNumber})`));
-				userList.value = result;
-				setTimeout(() => {
-					userDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取用户错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取用户错误`)
-		});
-	}
-
-	const openUserIndex = function() {
-		userListRef.value.open();
-	}
-
-	const userBindClick = function(source) {
-		let str = source.name;
-		try {
-			let tempArr = str.split('(');
-			let phoneNumber = tempArr[1].substring(0, tempArr[1].length - 1);
-			const result = userOriginList.value.find(item => item.phoneNumber == phoneNumber);
-			if (result) {
-				searchUser.value = result;
-				search.value.maintenance_man = result.id;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-	getUserList();
-
-	/////////////////////////////// 标签
-	const tagListRef = ref(null);
-	const tagDataLoadFlag = ref(false);
-	const tagList = ref([]);
-	const tagOriginList = ref([]);
-	const getTagList = function() {
-		getCustomerTagAllApi().then(res => {
-			if (res.status === 200) {
-				tagOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				tagList.value = result;
-				setTimeout(() => {
-					tagDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取产品标签错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取产品标签错误`)
-		});
-	}
-
-	const tagBindClick = function(source) {
-		try {
-			search.value.customer_tag = source.map(item => item.name).join(',')
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	const openTagIndex = function() {
-		tagListRef.value.open();
-	}
-	getTagList();
-
 	//来源
-	const originListRef = ref(null);
-	const originDataLoadFlag = ref(false);
 	const originList = ref([]);
-	const originOriginList = ref([]);
-	const searchOrigin = ref({});
-
 	const getOriginList = function() {
-		getOriginAllApi().then(res => {
-			if (res.status === 200) {
-				originOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				originList.value = result;
-				setTimeout(() => {
-					originDataLoadFlag.value = true;
+		getProductOriginAllApi().then(res => {
+			if (res.status == 200) {
+				const r = res.data.map(item => {
+					return {
+						value: item.id,
+						text: item.name
+					}
 				})
+				originList.value = r;
 			} else {
-				errorToast(res.message || `获取产品标签错误`)
+				errorToast(res.message || `获取成色错误`)
 			}
-		}).catch(res => {
-			errorToast(res.message || `获取产品标签错误`)
-		});
-	}
-
-	const openOriginIndex = function() {
-		originListRef.value.open();
-	}
-	const originBindClick = function(source) {
-		try {
-			const result = originOriginList.value.find(item => item.name == source.name);
-			if (!result) {
-				errorToast("来源数据错误");
-				return;
-			}
-			search.value.customer_origin_id = result.id;
-			searchOrigin.value = result;
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
+		})
 	}
 	getOriginList();
+
+
 
 	//////////////////////////// API
 	let pageNumber = 1;
@@ -363,5 +270,6 @@
 	}
 </script>
 
-<style>
+<style scoped>
+
 </style>
