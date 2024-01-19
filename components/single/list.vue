@@ -112,8 +112,6 @@
 
 	const createPowerEnable = ref(checkPower(createPowerName));
 	const findOnePowerEnable = ref(checkPower(findOnePowerName));
-	console.log("createPowerEnable", createPowerEnable.value);
-	console.log("createPowerName", createPowerName);
 
 	//参数
 	const list = ref([]);
@@ -156,7 +154,6 @@
 				errorToast(res.message || `${title}列表查询错误`)
 			}
 		}).catch(res => {
-			console.log("init catch", res)
 			errorToast(res.message || `${title}列表查询错误`)
 		}).finally(() => {
 			hideModal();

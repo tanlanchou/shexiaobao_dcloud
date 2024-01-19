@@ -77,7 +77,6 @@
 	let selectList;
 	const bindMClick = function() {
 		if (selectList.length > 0) {
-			console.log(selectList)
 			emits('indexSelect', selectList);
 			closeMySelf();
 		} else {

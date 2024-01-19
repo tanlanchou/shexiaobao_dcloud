@@ -379,7 +379,6 @@
 				if (_.get(formData, "value.intentionType") && _.isString(formData.value.intentionType)) {
 					let arr = _.split(formData.value.intentionType, ',');
 					let tempArr = arr.map(item => Number(item));
-					console.log("tempArr", tempArr);
 					formData.value.intentionType = tempArr;
 				}
 				if (iconRef && iconRef.value) {
@@ -407,8 +406,6 @@
 	}
 
 	function validateParams() {
-
-		console.log(_.get(formData, "value.name"));
 		if (!_.get(formData, "value.name") ||
 			_.get(formData, "value.name.length") < 2 || _.get(formData, "value.name.length") > 10) {
 			errorToast('名称必填, 长度2-10个字');

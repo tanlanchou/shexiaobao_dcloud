@@ -42,6 +42,8 @@ export const sexMap = [{
 	value: 2,
 }];
 
+
+
 export const customerMap = [{
 	text: "直客",
 	value: 1
@@ -49,3 +51,15 @@ export const customerMap = [{
 	text: "同行",
 	value: 2,
 }];
+
+export const productTypeMap = [{
+	text: "现代",
+	value: 1
+}, {
+	text: "中古",
+	value: 2,
+}];
+
+export const productForPeopleMap = ["通用", "女", "男"];
+export const productSizeMap = ["超迷你", "迷你", "小号", "中号", "大号", "超大号"];
+export const productOrderSearch = ["入库时间降序", "入库时间升序", "到达时间降序", "到达时间升序"];

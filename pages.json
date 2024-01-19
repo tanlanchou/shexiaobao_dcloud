@@ -247,6 +247,22 @@
 					"titleNView": false
 				}
 			}
+		},
+		{
+			"path": "pages/product/info/index",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/product/info/add",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
 		}
 	],
 	"globalStyle": {

@@ -2945,10 +2945,10 @@ egg-label>span::after {
 .cu-form-group {
   background-color: var(--white);
   padding: 1rpx 30rpx;
-  /* display: flex; */
+  display: flex;
   align-items: center;
   min-height: 100rpx;
-  /* justify-content: space-between; */
+  justify-content: space-between;
 }
 
 .cu-form-group+.cu-form-group {
@@ -2962,6 +2962,7 @@ egg-label>span::after {
   position: relative;
   height: 60rpx;
   line-height: 60rpx;
+  min-width: 90rpx;
 }
 
 .cu-form-group input {

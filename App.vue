@@ -79,7 +79,7 @@
 	body {
 		background-color: #f1f1f1;
 	}
-	
+
 	//header
 	.header_fixed {
 		position: fixed;
@@ -87,7 +87,26 @@
 		width: 100%;
 		z-index: 9999;
 	}
+
+	//upload
+	.smallContent>uni-view {
+		width: 31.6% !important;
+	}
+
+	.smallCheck>uni-radio-group>uni-label {
+		margin-right: 7px !important;
+	}
 	
+	.form_card {
+		padding: 0 15px;
+	}
+	
+	.form_split {
+		padding: 15px;
+		text-align: center;
+		color: gray;
+	}
+
 
 	.no-line {
 		text-decoration: none;
@@ -117,7 +136,7 @@
 	.mb-10 {
 		margin-bottom: 10px;
 	}
-	
+
 	.mb-20 {
 		margin-bottom: 20px;
 	}
@@ -159,15 +178,15 @@
 	.form_card .uni-card__content {
 		padding: 0 !important;
 	}
-	
+
 	.form_card .uni-card__content .cu-form-group {
 		padding: 0 !important;
 	}
-	
+
 	.form_card .uni-card__content .cu-form-group .uni-padding-wrap {
 		padding: 0 10px !important;
 	}
-	
+
 	.card_fixed {
 		margin-top: 60px !important;
 	}

@@ -117,7 +117,6 @@
 
 	const createPowerEnable = ref(checkPower(createPowerName));
 	const findOnePowerEnable = ref(checkPower(findOnePowerName));
-	console.log("createPowerEnable", createPowerEnable.value);
 
 	//参数
 	const list = ref([]);

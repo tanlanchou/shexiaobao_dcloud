@@ -1,0 +1,40 @@
+<template>
+	<picker @change="forPeoplePickerChange" :value="forPeopleIndex" :range="productForPeopleMap">
+		<view class="picker">
+			{{ forPeopleIndex > -1 ? productForPeopleMap[forPeopleIndex] : '请选择' }}
+		</view>
+	</picker>
+</template>
+
+<script setup>
+	import {
+		ref,
+		defineProps,
+		defineEmits
+	} from 'vue';
+	import * as a from "@/common/enum.js";
+
+	const props = defineProps({
+		name: {
+			type: String,
+			required: true
+		},
+		modelValue: {
+			type: Number,
+			default: -1
+		}
+	});
+
+	const emit = defineEmits(['update:modelValue']);
+
+	const productForPeopleMap = ref(a[props.name]);
+	const forPeopleIndex = ref(props.modelValue);
+
+	const forPeoplePickerChange = function(e) {
+		forPeopleIndex.value = e.detail.value;
+		emit('update:modelValue', forPeopleIndex.value);
+	}
+</script>
+
+<style>
+</style>

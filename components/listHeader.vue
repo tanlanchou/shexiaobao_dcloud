@@ -9,9 +9,10 @@
 			</a>
 		</view>
 		<view class="padding-lr-sm">
-			<slot></slot>
+			<slot name="default"></slot>
 		</view>
 	</view>
+	<!-- <view><slot name="search"></slot></view> -->
 
 
 </template>

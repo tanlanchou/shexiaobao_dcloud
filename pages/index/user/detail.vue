@@ -120,15 +120,6 @@
 			}
 		},
 		onReady(option) {
-
-			// let routes = getCurrentPages(); // 获取当前打开过的页面路由数组
-			// console.log(JSON.stringify(routes))
-			// let curRoute = routes[routes.length - 1].route //获取当前页面路由
-			// console.log(curRoute)
-			// let curParam = routes[routes.length - 1].options; //获取路由参数
-			// console.log("curParam", curParam);
-			//userStatusToWords
-
 		},
 		methods: {
 			userstatsToWords(status) {
@@ -158,10 +149,6 @@
 					return
 				}
 
-				console.log(`用户更新 this.formData.nickname`, this.formData.nickname.length);
-				console.log(`用户更新 this.formData.status`, this.formData.status);
-				console.log(`用户更新 this.formData.roleId`, this.formData.roleId);
-
 				if (!this.formData.nickname || this.formData.nickname.length < 2 || this.formData.nickname.length > 10) {
 					errorToast(`昵称长度必须超过2位且不超过10位`)
 					return
@@ -184,7 +171,6 @@
 					roleId: this.formData.roleId,
 					status: this.formData.status
 				}).then(res => {
-					console.log(`用户编辑:`, res);
 					if (res.status == 200) {
 						successToast(`提交用户数据成功`);
 						setTimeout(() => {

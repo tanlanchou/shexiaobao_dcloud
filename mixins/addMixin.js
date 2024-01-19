@@ -6,7 +6,6 @@ export default {
 		}
 	},
 	onLoad(options) {
-		console.log("options", options);
 		this.title = options.title;
 		this.id = options.id;
 	}
