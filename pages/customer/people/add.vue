@@ -86,7 +86,7 @@
 			<form>
 				<view class="cu-form-group" style="padding-top: 5px !important;">
 
-					<sunui-upimg url="http://localhost:3001/static/upload" ref="iconRef" title="上传头像"
+					<sunui-upimg url="http://192.168.2.247:3001/static/upload" ref="iconRef" title="上传头像"
 						@upload="handleLoaded" :before-upload="handleChange" :number="1">
 						<template v-slot:icon>
 							<text class="s-add-list-btn-icon">+</text>

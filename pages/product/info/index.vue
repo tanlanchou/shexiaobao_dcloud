@@ -30,28 +30,30 @@
 		<text class="cuIcon-pullright"></text>
 	</view>
 	<scroll-view scroll-y class="DrawerWindow" :class="modalName=='viewModal'?'show':''">
-		<view class="form_card">
+
+		<view class="search_body form_card">
 			<view class="cu-form-group align-start">
 				<view class="title">排序</view>
 				<picker-single v-model="search.order" name="productOrderSearch"></picker-single>
 			</view>
 			<view class="cu-form-group">
-				<view class="title">名称</view>
-				<input type="text" v-model="search.title" />
+				<view class="title">关键字</view>
+				<input type="text" v-model="search.keywords" placeholder="名称, 编号, 描述, 颜色等等" />
 			</view>
-			<select-index-single-sync title="品牌" :req="false" name="getProductTypeAllApi" v-model="search.type">
+			<select-index-single-sync ref="productTypeIdRef" title="品牌" :req="false" name="getProductTypeAllApi"
+				v-model="search.productTypeId">
 			</select-index-single-sync>
-			<picker-muplt title="品类" :req="false" name="getProductCategoryAllApi"
-				v-model="search.category"></picker-muplt>
-			<select-index-single-sync title="成色" :req="false" otherName="desc" name="getProductQualityAllApi"
-				v-model="search.quality"></select-index-single-sync>
+			<picker-muplt title="品类" ref="productCategoryIdRef" :req="false" name="getProductCategoryAllApi"
+				v-model="search.productCategoryId"></picker-muplt>
+			<select-index-single-sync ref="productQualityIdRef" title="成色" :req="false" otherName="desc" name="getProductQualityAllApi"
+				v-model="search.productQualityId"></select-index-single-sync>
 			<view class="cu-form-group">
 				<view class="title">来源</view>
 				<uni-data-checkbox class="smallCheck" mode="tag" v-model="search.productOriginId"
 					:localdata="originList"></uni-data-checkbox>
 			</view>
-			<select-index-single-sync title="仓库" :req="false" name="getProductStorehouseAllApi"
-				v-model="search.quality"></select-index-single-sync>
+			<select-index-single-sync title="仓库"  ref="productStoreIdRef" :req="false" name="getProductStorehouseAllApi"
+				v-model="search.productStoreId"></select-index-single-sync>
 			<view class="cu-form-group">
 				<view class="title">成本价</view>
 				<input style="text-align: center;" v-model="search.minCostPrice" placeholder="最小值" type="number">-<input
@@ -87,25 +89,41 @@
 			</view>
 			<view class="cu-form-group">
 				<view class="title">适用人群</view>
-				<picker-single v-model="search.forPeople" name="productForPeopleMap"></picker-single>
+				<picker-single ref="forPeopleRef" v-model="search.forPeople" name="productForPeopleMap"></picker-single>
 			</view>
 			<view class="cu-form-group">
 				<view class="title">尺码</view>
-				<picker-single v-model="search.forPeople" name="productSizeMap"></picker-single>
+				<picker-single v-model="search.size" name="productSizeMap"></picker-single>
 			</view>
-		</view>
-		<uni-card>
-
-			<view class="mt-20 mb-10">
-				<button class="cu-btn bg-purple" @click="getList(true)">
+			<select-index-muplt-sync title="材质" :req="false" name="getProductMaterialAllApi"
+				v-model="search.productMaterial"></select-index-muplt-sync>
+			<view class="cu-form-group">
+				<view class="title">到货时间</view>
+				<uni-datetime-picker :clear-icon="false" :border="false" v-model="search.arraivalRange" type="daterange" />
+			</view>
+			<view class="cu-form-group clear_close">
+				<view class="title">入库时间</view>
+				<uni-datetime-picker :clear-icon="false" :border="false" v-model="search.inTImeRange" type="daterange" />
+			</view>
+			<select-index-single-sync title="买手" :req="false" name="getAllUserApi"
+				v-model="search.buyer"></select-index-single-sync>
+			<select-index-muplt-sync title="标签" :req="false" name="getProductTagAllApi"
+				v-model="search.productTag"></select-index-muplt-sync>
+			<select-index-muplt-sync title="附件" :req="false" name="getProductAttachAllApi"
+				v-model="search.productAttach"></select-index-muplt-sync>
+			<view class="search_action">
+				&nbsp;
+				<button class="cu-btn bg-purple" style="width:40%" @click="getList(true)">
 					<text class="cuIcon-filter"></text> 筛选
 				</button>
 				&nbsp;
-				<button class="cu-btn bg-red" @click="search = {}; searchOrigin = {}; searchUser = {}">
+				<button class="cu-btn bg-red" style="width:40%" @click="searchClear">
 					<text class="cuIcon-refresh"></text> 清空
 				</button>
+				&nbsp;
 			</view>
-		</uni-card>
+		</view>
+
 	</scroll-view>
 </template>
 
@@ -159,6 +177,7 @@
 
 	import pickerSingle from "@/components/pickerSingle.vue";
 	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
+	import selectIndexMupltSync from "@/components/selectIndexMupltSync.vue";
 	import pickerMuplt from "@/components/pickerMuplt.vue";
 	import {
 		productTypeMap,
@@ -198,7 +217,10 @@
 	}
 
 	//////////////////////////// 筛选
-	const search = ref({});
+	const defaultSearch = {
+		order: 0
+	};
+	const search = ref(_.cloneDeep(defaultSearch));
 	const searchUser = ref({});
 
 	//来源
@@ -219,8 +241,22 @@
 		})
 	}
 	getOriginList();
-
-
+	
+	//////////////////////////// 变量REF和清空
+	const productTypeIdRef = ref(null);
+	const productQualityIdRef = ref(null);
+	const productCategoryIdRef = ref(null);
+	const productStoreIdRef = ref(null);
+	const forPeopleRef = ref(null);
+	
+	const searchClear = function() {
+		search.value = _.cloneDeep(defaultSearch);
+		productTypeIdRef.value.clear();
+		productQualityIdRef.value.clear();
+		productCategoryIdRef.value.clear();
+		productStoreIdRef.value.clear();
+		forPeopleRef.value.clear();
+	}
 
 	//////////////////////////// API
 	let pageNumber = 1;
@@ -228,18 +264,10 @@
 	const list = ref([])
 	const likeArr = ["name", "no", "intention_type", "customer_tag"]
 	const getList = function(isClear) {
-		const keys = Object.keys(search.value);
-		const searchArr = [];
-		keys.forEach(key => {
-			let param = {
-				key,
-				value: search.value[key],
-				isLike: likeArr.includes(key)
-			}
-			searchArr.push(param);
-		})
 
-		getProductAllInfoApi(pageNumber, searchArr).then(res => {
+		const params = JSON.parse(JSON.stringify(search.value));
+
+		return getProductAllInfoApi(pageNumber, params).then(res => {
 			if (_.get(res, "status") == 200) {
 				list.value = isClear ? res.data.results : list.value.concat(res.data.results);
 			} else {
@@ -247,6 +275,10 @@
 			}
 		}).catch(res => {
 			errorToast(_.get(res, "message", "获取产品列表出错"));
+		}).finally(() => {
+			if (isClear) {
+				hideModal();
+			}
 		})
 	}
 

@@ -96,11 +96,11 @@
 	.smallCheck>uni-radio-group>uni-label {
 		margin-right: 7px !important;
 	}
-	
+
 	.form_card {
 		padding: 0 15px;
 	}
-	
+
 	.form_split {
 		padding: 15px;
 		text-align: center;
@@ -117,7 +117,20 @@
 		width: auto;
 		height: auto;
 	}
-	
+
+	//search
+	.search_body {
+		position: relative;
+		border-radius: 20px;
+	}
+
+	.search_action {
+		position: fixed;
+		bottom: 0.5rem;
+		width: 100%;
+		height: auto;
+	}
+
 	//input
 
 	// 内部样式重载
@@ -129,6 +142,10 @@
 		overflow: hidden;
 		word-break: break-all;
 		margin: 15px 15px;
+	}
+	
+	.uni-calendar .dialog-close {
+		display: none !important;
 	}
 
 	.t-drawer .uni-drawer__content {

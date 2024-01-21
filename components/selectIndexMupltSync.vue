@@ -2,12 +2,12 @@
 	<view class="cu-form-group" @click="openTypeIndex">
 		<view class="title">{{title}} {{req ? "*" : ""}}</view>
 		<view>
-			<text>{{formType.name || "请选择"}}</text>
+			<text>{{formType && formType.join(',') || "请选择"}}</text>
 			<text class="cuIcon-right"></text>
 		</view>
 	</view>
 
-	<index-select ref="typeListRef" :title="title + '选择'" v-if="typeDataLoadFlag" :list="typeList" :isSingle="true"
+	<index-select ref="typeListRef" :title="title + '选择'" v-if="typeDataLoadFlag" :list="typeList" :isSingle="false"
 		:isShowSelect="true" @indexSelect="typeBindClick"></index-select>
 </template>
 
@@ -15,7 +15,10 @@
 	import {
 		getProductTypeAllApi,
 		getProductQualityAllApi,
-		getProductStorehouseAllApi
+		getProductStorehouseAllApi,
+		getProductMaterialAllApi,
+		getProductTagAllApi,
+		getProductAttachAllApi
 	} from "@/api/product.info";
 	import indexSelect from '@/components/indexSelect.vue'
 	import {
@@ -36,7 +39,9 @@
 		getProductTypeAllApi,
 		getProductQualityAllApi,
 		getProductStorehouseAllApi,
-		getProductMaterialAllApi
+		getProductMaterialAllApi,
+		getProductTagAllApi,
+		getProductAttachAllApi
 	}
 
 	const props = defineProps({
@@ -72,7 +77,7 @@
 	const typeDataLoadFlag = ref(false);
 	const typeList = ref([]);
 	const typeOriginList = ref([]);
-	const formType = ref({});
+	const formType = ref([]);
 
 	//getProductTypeAllApi
 	const getTypeList = function() {
@@ -109,27 +114,29 @@
 	}
 
 	const typeBindClick = function(source) {
-		let str = source.name;
-		try {
 
-			let result;
+		let names = [];
+		console.log(source)
+		source.forEach(item => {
+			let str = item.name;
 			if (props.otherName) {
 				str = str.split('---')[0];
 			}
+			names.push(str);
+		})
 
-			result = typeOriginList.value.find(item => item.name == str);
-
-
+		let results = [];
+		names.forEach(name => {
+			const result = typeOriginList.value.find(item => item.name == name);
 			if (result) {
-				formType.value = result;
-				emit('update:modelValue', result.id);
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
+				results.push(result);
 			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
+		})
+
+
+		formType.value = results.map(item => item.name);
+		emit('update:modelValue', results.map(item => item.name));
+
 	}
 
 	if (!props.ljz) {

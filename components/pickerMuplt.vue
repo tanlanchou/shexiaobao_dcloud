@@ -4,7 +4,7 @@
 		<picker ref="categoryListRef" v-if="categoryDataLoadFlag" mode="multiSelector" @change="categoryChange"
 			@columnchange="categoryColumnChange" :range="categoryList">
 			<view class="picker">
-				{{formCategory.name || "请选择"}}
+				{{formCategory.name || (v && v.name) || "请选择"}}
 			</view>
 		</picker>
 	</view>
@@ -36,6 +36,10 @@
 		req: {
 			type: Boolean,
 			default: false
+		},
+		v: {
+			type: Object,
+			required: false
 		}
 	});
 
@@ -93,21 +97,14 @@
 	}
 	getCategoryList();
 
-	// const categoryColumnChange = function(e) {
-	// 	if (e.detail.column == 0) {
-	// 		const r = firstArr[e.detail.value];
-	// 		const secondArr = categoryOriginList.value.filter(item => item.parentId == r.id);
-	// 		categoryList.value[1] = secondArr.map(item => item.name);
-	// 	}
-	// }
+	function clear() {
+		formCategory.value = {};
+	}
+	
+	defineExpose({
+		clear
+	})
 
-	// const productForPeopleMap = ref(a[props.name]);
-	// const forPeopleIndex = ref(props.modelValue);
-
-	// const forPeoplePickerChange = function(e) {
-	// 	forPeopleIndex.value = e.detail.value;
-	// 	emit('update:modelValue', forPeopleIndex.value);
-	// }
 </script>
 
 <style>

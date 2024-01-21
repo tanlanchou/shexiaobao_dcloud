@@ -11,7 +11,7 @@
 
 
 	<uni-card class="form_card card_fixed" title="商品图片">
-		<sunui-upimg class="smallContent" style="margin-top: 5px !important;" url="http://localhost:3001/static/upload"
+		<sunui-upimg class="smallContent" style="margin-top: 5px !important;" url="http://192.168.2.247:3001/static/upload"
 			ref="iconRef" title="上传" @upload="handleLoaded" :before-upload="handleChange" :number="9">
 			<template v-slot:icon>
 				<text class="s-add-list-btn-icon">+</text>
@@ -24,29 +24,13 @@
 			<view class="title">名称 *</view>
 			<textarea v-model="formData.title" placeholder="请输入名称"></textarea>
 		</view>
-		<view class="cu-form-group" @click="openTypeIndex">
-			<view class="title">品牌 *</view>
-			<view>
-				<text>{{formType.name || "请选择"}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">品类 *</view>
-			<picker ref="categoryListRef" v-if="categoryDataLoadFlag" mode="multiSelector" @change="categoryChange"
-				@columnchange="categoryColumnChange" :range="categoryList">
-				<view class="picker">
-					{{formCategory.name || "请选择"}}
-				</view>
-			</picker>
-		</view>
-		<view class="cu-form-group" @click="openQualityIndex">
-			<view class="title">成色 *</view>
-			<view>
-				<text>{{formQuality.name || "请选择"}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
+		<select-index-single-sync title="品牌" :v="formData.productType" :req="true" name="getProductTypeAllApi"
+			v-model="formData.productTypeId">
+		</select-index-single-sync>
+		<picker-muplt title="品类" :req="true" :v="formData.productCategory" name="getProductCategoryAllApi"
+			v-model="formData.productCategoryId"></picker-muplt>
+		<select-index-single-sync title="成色" :v="formData.productQuality" :req="true" otherName="desc" name="getProductQualityAllApi"
+			v-model="formData.productQualityId"></select-index-single-sync>
 		<view class="cu-form-group">
 			<view class="title">来源 *</view>
 			<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.productOriginId"
@@ -56,13 +40,8 @@
 			<view class="title">来源方 *</view>
 			<input type="text" v-model="formData.originName" placeholder="请输入商品来源方" />
 		</view>
-		<view class="cu-form-group" @click="openStoreIndex">
-			<view class="title">仓库 *</view>
-			<view>
-				<text>{{formStore.name || "请选择"}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
+		<select-index-single-sync title="仓库" :v="formData.productStore" :req="true" name="getProductStorehouseAllApi"
+			v-model="formData.productStoreId"></select-index-single-sync>
 		<view class="cu-form-group">
 			<view class="title">店铺编号 *</view>
 			<input type="text" v-model="formData.no" placeholder="仓库货编" />
@@ -109,12 +88,8 @@
 			<text class='cuIcon-discover text-black'></text>
 		</view>
 		<view class="cu-form-group">
-			<view class="title">适用人群</view>
-			<picker @change="forPeoplePickerChange" :value="forPeopleIndex" :range="productForPeopleMap">
-				<view class="picker">
-					{{forPeopleIndex>-1?productForPeopleMap[forPeopleIndex]:'请选择'}}
-				</view>
-			</picker>
+			<view class="title">适用人群{{formData.forPeople}}</view>
+			<picker-single v-model="formData.forPeople" name="productForPeopleMap"></picker-single>
 		</view>
 	</view>
 	<view class="form_card mt-10">
@@ -229,6 +204,12 @@
 	import {
 		isLogin
 	} from '@/common/login';
+	
+	import pickerSingle from "@/components/pickerSingle.vue";
+	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
+	import selectIndexMupltSync from "@/components/selectIndexMupltSync.vue";
+	import pickerMuplt from "@/components/pickerMuplt.vue";
+	
 	import {
 		getProductCategoryAllApi,
 		getProductTypeAllApi,

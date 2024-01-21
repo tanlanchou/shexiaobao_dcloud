@@ -2,7 +2,7 @@
 	<view class="cu-form-group" @click="openTypeIndex">
 		<view class="title">{{title}} {{req ? "*" : ""}}</view>
 		<view>
-			<text>{{formType.name || "请选择"}}</text>
+			<text>{{getName(formType) || getName(props.v) || "请选择"}}</text>
 			<text class="cuIcon-right"></text>
 		</view>
 	</view>
@@ -15,8 +15,15 @@
 	import {
 		getProductTypeAllApi,
 		getProductQualityAllApi,
-		getProductStorehouseAllApi
+		getProductStorehouseAllApi,
+		getProductTagAllApi,
+		getProductAttachAllApi
 	} from "@/api/product.info";
+	import {
+		getAllUserApi
+	} from "../api/user";
+
+
 	import indexSelect from '@/components/indexSelect.vue'
 	import {
 		filterArrayByIndex
@@ -35,7 +42,10 @@
 	const a = {
 		getProductTypeAllApi,
 		getProductQualityAllApi,
-		getProductStorehouseAllApi
+		getProductStorehouseAllApi,
+		getAllUserApi,
+		getProductTagAllApi,
+		getProductAttachAllApi
 	}
 
 	const props = defineProps({
@@ -61,6 +71,10 @@
 		},
 		otherName: {
 			type: String
+		},
+		v: {
+			type: Object,
+			required: false
 		}
 	});
 
@@ -81,9 +95,9 @@
 				let result;
 				if (props.otherName) {
 					result = filterArrayByIndex(res.data.map(item =>
-						`${item.name}---${item[props.otherName]}`));
+						`${getName(item)}---${item[props.otherName]}`));
 				} else {
-					result = filterArrayByIndex(res.data.map(item => item.name));
+					result = filterArrayByIndex(res.data.map(item => getName(item)));
 				}
 				typeList.value = result;
 			} else {
@@ -106,9 +120,16 @@
 			typeListRef.value.open();
 		}
 	}
+	
+	function getName(data) {
+		if(data) {
+			return data.name || data.nickname
+		}
+		return;
+	}
 
 	const typeBindClick = function(source) {
-		let str = source.name;
+		let str = getName(source);
 		try {
 
 			let result;
@@ -116,7 +137,7 @@
 				str = str.split('---')[0];
 			}
 
-			result = typeOriginList.value.find(item => item.name == str);
+			result = typeOriginList.value.find(item => getName(item) == str);
 
 
 			if (result) {
@@ -134,6 +155,14 @@
 	if (!props.ljz) {
 		getTypeList()
 	}
+	
+	function clear() {
+		formType.value = {};
+	}
+	
+	defineExpose({
+		clear
+	})
 </script>
 
 <style>

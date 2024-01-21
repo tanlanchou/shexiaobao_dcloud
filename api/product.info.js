@@ -20,7 +20,7 @@ export const updateProductInfoApi = function(id, data) {
 
 export const getProductAllInfoApi = function(page, data) {
 	return request({
-		url: `/product/info/find/all/${page}`,
+		url: `/product/info/search/all/${page}`,
 		method: `post`,
 		isValid: true,
 		data
