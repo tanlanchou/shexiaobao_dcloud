@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<list-header :title="myTitle">
+		<list-header class="header_fixed" :title="myTitle">
 			<button v-if="updateEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
 				@click="add">
 				<text class="cuIcon-add"></text> 提交
@@ -9,24 +9,19 @@
 				<text class="cuIcon-delete"></text> 删除
 			</button>
 		</list-header>
-		<uni-card>
-			<form>
-				<view class="cu-form-group">
-					<view class="uni-padding-wrap mb-30">
-						<uni-section title="名称" type="line">
-							<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
-								v-model="formData.name" placeholder="请输入名称" prefix-icon="font"></uni-easyinput>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap mb-30" v-if="powerBase == 'ProductQualityController'">
-						<uni-section title="描述" type="line">
-							<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
-								v-model="formData.desc" placeholder="请输入描述" prefix-icon="font"></uni-easyinput>
-						</uni-section>
-					</view>
-				</view>
-			</form>
+		
+		<uni-card class="form_card card_fixed">
+			<view class="cu-form-group ">
+				<view class="title">名称 *</view>
+				<input type="text" v-model="formData.name" placeholder="请输入" />
+			</view>
+			<view class="cu-form-group align-start" v-if="powerBase == 'ProductQualityController'">
+				<view class="title">描述</view>
+				<textarea v-model="formData.desc" placeholder="请输入"></textarea>
+			</view>
 		</uni-card>
+
+
 	</view>
 
 	<uni-popup ref="alertDialog" type="dialog">

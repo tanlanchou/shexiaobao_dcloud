@@ -2,7 +2,7 @@ import {
 	isLogin
 } from "@/common/login.js"
 
-const BASE_URL = 'http://192.168.2.247:3001'
+const BASE_URL = 'http://127.0.0.1:3001'
 
 const common = {
 	baseUrl: BASE_URL,

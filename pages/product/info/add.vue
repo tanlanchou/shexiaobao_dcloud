@@ -11,7 +11,7 @@
 
 
 	<uni-card class="form_card card_fixed" title="商品图片">
-		<sunui-upimg class="smallContent" style="margin-top: 5px !important;" url="http://192.168.2.247:3001/static/upload"
+		<sunui-upimg class="smallContent" style="margin-top: 5px !important;" url="http://127.0.0.1:3001/static/upload"
 			ref="iconRef" title="上传" @upload="handleLoaded" :before-upload="handleChange" :number="9">
 			<template v-slot:icon>
 				<text class="s-add-list-btn-icon">+</text>
@@ -24,15 +24,16 @@
 			<view class="title">名称 *</view>
 			<textarea v-model="formData.title" placeholder="请输入名称"></textarea>
 		</view>
+
 		<select-index-single-sync title="品牌" :v="formData.productType" :req="true" name="getProductTypeAllApi"
 			v-model="formData.productTypeId">
 		</select-index-single-sync>
 		<picker-muplt title="品类" :req="true" :v="formData.productCategory" name="getProductCategoryAllApi"
 			v-model="formData.productCategoryId"></picker-muplt>
-		<select-index-single-sync title="成色" :v="formData.productQuality" :req="true" otherName="desc" name="getProductQualityAllApi"
-			v-model="formData.productQualityId"></select-index-single-sync>
+		<select-index-single-sync title="成色" :v="formData.productQuality" :req="true" otherName="desc"
+			name="getProductQualityAllApi" v-model="formData.productQualityId"></select-index-single-sync>
 		<view class="cu-form-group">
-			<view class="title">来源 *</view>
+			<view class="title">来源{{formData.productOriginId}} *</view>
 			<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.productOriginId"
 				:localdata="originList"></uni-data-checkbox>
 		</view>
@@ -88,31 +89,22 @@
 			<text class='cuIcon-discover text-black'></text>
 		</view>
 		<view class="cu-form-group">
-			<view class="title">适用人群{{formData.forPeople}}</view>
+			<view class="title">适用人群</view>
 			<picker-single v-model="formData.forPeople" name="productForPeopleMap"></picker-single>
 		</view>
 	</view>
 	<view class="form_card mt-10">
 		<view class="cu-form-group">
 			<view class="title">尺码</view>
-			<picker @change="sizePickerChange" :value="sizeIndex" :range="productSizeMap">
-				<view class="picker">
-					{{sizeIndex>-1?productSizeMap[sizeIndex]:'请选择'}}
-				</view>
-			</picker>
+			<picker-single v-model="formData.size" name="productSizeMap"></picker-single>
 		</view>
 		<view class="cu-form-group">
 			<view class="title">尺寸</view>
 			<input type="number" v-model="formData.sizes" placeholder="请输入" />
 			<text class='cuIcon-discover text-black'></text>
 		</view>
-		<view class="cu-form-group" @click="openMaterialIndex">
-			<view class="title">材质</view>
-			<view>
-				<text>{{formMaterial}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
+		<select-index-muplt-sync title="材质" :v="formData.productMaterial" :req="false" name="getProductMaterialAllApi"
+			v-model="formData.productMaterial"></select-index-muplt-sync>
 		<view class="cu-form-group">
 			<view class="title">商品颜色</view>
 			<input type="number" v-model="formData.color" placeholder="请输入" />
@@ -129,69 +121,37 @@
 		</view>
 		<view class="cu-form-group">
 			<view class="title">到货时间</view>
-			<picker mode="date" :value="arrivalTimeIndex" start="2024-01-01" end="2025-09-01"
+			<picker mode="date" :value="formData.arrivalTime" start="2024-01-01" end="2025-09-01"
 				@change="arrivalTimePickerChange">
 				<view class="picker">
-					{{arrivalTimeIndex}}
+					{{formData.arrivalTime}}
 				</view>
 			</picker>
 		</view>
 		<view class="cu-form-group">
 			<view class="title">入库时间</view>
-			<picker mode="date" :value="inTimeIndex" start="2024-01-01" end="2025-09-01" @change="inTimePickerChange">
+			<picker mode="date" :value="formData.inTime" start="2024-01-01" end="2025-09-01"
+				@change="inTimePickerChange">
 				<view class="picker">
-					{{inTimeIndex}}
+					{{formData.inTime}}
 				</view>
 			</picker>
 		</view>
-		<view class="cu-form-group" @click="openUserIndex">
-			<view class="title">买手 *</view>
-			<view>
-				<text>{{formUser.nickname}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
-		<view class="cu-form-group" @click="openTagIndex">
-			<view class="title">标签</view>
-			<view>
-				<text>{{formTag}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
-		<view class="cu-form-group" @click="openAttachIndex">
-			<view class="title">附件</view>
-			<view>
-				<text>{{formAttach}}</text>
-				<text class="cuIcon-right"></text>
-			</view>
-		</view>
+		<select-index-single-sync :v="formData.user" title="买手" :req="false" name="getAllUserApi"
+			v-model="formData.buyer"></select-index-single-sync>
+		<select-index-muplt-sync :v="formData.productTag" title="标签" :req="false" name="getProductTagAllApi"
+			v-model="formData.productTag"></select-index-muplt-sync>
+		<select-index-muplt-sync :v="formData.productAttach" title="附件" :req="false" name="getProductAttachAllApi"
+			v-model="formData.productAttach"></select-index-muplt-sync>
 
 		<view class="cu-form-group  align-start">
 			<view class="title">备注</view>
 			<textarea maxlength="-1" v-model="formData.description" placeholder="请输入"></textarea>
 		</view>
+		<view style="height:30rpx">
+
+		</view>
 	</view>
-
-	<index-select ref="typeListRef" title="品牌选择" v-if="typeDataLoadFlag" :list="typeList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="typeBindClick"></index-select>
-
-	<index-select ref="qualityListRef" title="成色选择" v-if="qualityDataLoadFlag" :list="qualityList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="qualityBindClick"></index-select>
-
-	<index-select ref="storeListRef" title="仓库选择" v-if="storeDataLoadFlag" :list="storeList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="storeBindClick"></index-select>
-
-	<index-select ref="materialListRef" title="材质选择" v-if="materialDataLoadFlag" :list="materialList" :isSingle="false"
-		:isShowSelect="true" @indexSelect="materialBindClick"></index-select>
-
-	<index-select ref="userListRef" title="买手选择" v-if="userDataLoadFlag" :list="userList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="userBindClick"></index-select>
-
-	<index-select ref="tagListRef" title="标签选择" v-if="tagDataLoadFlag" :list="tagList" :isSingle="false"
-		:isShowSelect="true" @indexSelect="tagBindClick"></index-select>
-
-	<index-select ref="attachListRef" title="附件选择" v-if="attachDataLoadFlag" :list="attachList" :isSingle="false"
-		:isShowSelect="true" @indexSelect="attachBindClick" />
 
 	<uni-popup ref="alertDialog" type="dialog">
 		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
@@ -204,23 +164,17 @@
 	import {
 		isLogin
 	} from '@/common/login';
-	
+
 	import pickerSingle from "@/components/pickerSingle.vue";
 	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
 	import selectIndexMupltSync from "@/components/selectIndexMupltSync.vue";
 	import pickerMuplt from "@/components/pickerMuplt.vue";
-	
+
 	import {
-		getProductCategoryAllApi,
-		getProductTypeAllApi,
-		getProductQualityAllApi,
 		getProductOriginAllApi,
-		getProductStorehouseAllApi,
-		getProductMaterialAllApi,
-		getProductTagAllApi,
-		getProductAttachAllApi,
 		addProductInfoApi,
-		updateProductInfoApi
+		updateProductInfoApi,
+		deleteProductInfoApi
 	} from '@/api/product.info';
 	import {
 		getAllUserApi,
@@ -287,56 +241,38 @@
 	const title = ref("");
 	onLoad((options) => {
 		if (options.id) _id = options.id;
-
-		Promise.all([getTypeList(), getCategoryList(), getQualityList(), getOriginList(), getStoreList(),
-			getMaterialList(), getUserList(), getTagList(), getAttachList()
-		]).then(() => {
-			if (_id) {
-				getOne(_id);
-			} else {
-				getMySelf();
-			}
-		})
-		// getTypeList();
-		// getCategoryList();
-		// getQualityList();
-		// getOriginList();
-		// getStoreList();
-		// getMaterialList();
-		// getUserList();
-		// getTagList();
-		// getAttachList();
-
+		getOriginList();
 		if (_id) {
 			title.value = "产品编辑";
+			getOne(_id);
 		} else {
 			title.value = "产品添加";
+			getMySelf();
 		}
 	});
 
-	//单选
-	const forPeopleIndex = ref(-1);
-	const forPeoplePickerChange = function(e) {
-		forPeopleIndex.value = e.detail.value;
-		formData.value.forPeople = e.detail.value;
+
+	const getMySelf = function() {
+		if (!_id) {
+			getUserInfoApi().then(res => {
+				if (res.status == 200) {
+					formData.value.user = res.data
+					formData.value.buyer = res.data.id;
+				} else {
+					errorToast(res.message || `获取用户信息错误`)
+				}
+			}).catch(res => {
+				errorToast(res.message || `获取用户信息错误`)
+			});
+		}
 	}
 
-	const sizeIndex = ref(-1);
-	const sizePickerChange = function(e) {
-		sizeIndex.value = e.detail.value;
-		formData.value.size = e.detail.value;
-	}
 
-	const arrivalTimeIndex = ref(moment().format('YYYY-MM-DD'));
 	const arrivalTimePickerChange = function(e) {
-		arrivalTimeIndex.value = e.detail.value;
 		formData.value.arrivalTime = e.detail.value;
 	}
 
-	const inTimeIndex = ref(moment().format('YYYY-MM-DD'));
 	const inTimePickerChange = function(e) {
-
-		inTimeIndex.value = e.detail.value;
 		formData.value.inTime = e.detail.value;
 	}
 
@@ -356,141 +292,6 @@
 		}, 1);
 	}
 
-	//品牌
-	const typeListRef = ref(null);
-	const typeDataLoadFlag = ref(false);
-	const typeList = ref([]);
-	const typeOriginList = ref([]);
-	const formType = ref({});
-
-	const getTypeList = function() {
-		return getProductTypeAllApi().then(res => {
-			if (res.status == 200) {
-				typeOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				typeList.value = result;
-				setTimeout(() => {
-					typeDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取品牌错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取品牌错误`)
-		});
-	}
-
-	const openTypeIndex = function() {
-		typeListRef.value.open();
-	}
-
-	const typeBindClick = function(source) {
-		let str = source.name;
-		try {
-			const result = typeOriginList.value.find(item => item.name == str);
-			if (result) {
-				formType.value = result;
-				formData.value.productTypeId = result.id;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	//品类
-	const categoryListRef = ref(null);
-	const categoryDataLoadFlag = ref(false);
-	const categoryList = ref([]);
-	const categoryOriginList = ref([]);
-	const formCategory = ref({});
-	let firstArr = [];
-
-	const getCategoryList = function() {
-		return getProductCategoryAllApi().then(res => {
-			if (res.status == 200) {
-				categoryOriginList.value = JSON.parse(JSON.stringify(res.data));
-				firstArr = categoryOriginList.value.filter(item => item.parentId == 0);
-				const secondArr = categoryOriginList.value.filter(item => item.parentId == firstArr[0].id);
-				categoryList.value = [firstArr.map(item => item.name), secondArr.map(item => item.name)];
-				setTimeout(() => {
-					categoryDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取品类错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取品类错误`)
-		});
-	}
-
-	const categoryColumnChange = function(e) {
-		if (e.detail.column == 0) {
-			const r = firstArr[e.detail.value];
-			const secondArr = categoryOriginList.value.filter(item => item.parentId == r.id);
-			categoryList.value[1] = secondArr.map(item => item.name);
-		}
-	}
-
-	const categoryChange = function(e) {
-		const indexOne = e.detail.value[0];
-		const indexTwo = e.detail.value[1];
-		const r = firstArr[indexOne];
-		const secondArr = categoryOriginList.value.filter(item => item.parentId == r.id);
-		if (secondArr.length == 0) {
-			formCategory.value = r;
-		} else {
-			formCategory.value = secondArr[indexTwo];
-		}
-		formData.value.productCategoryId = formCategory.value.id;
-	}
-
-	//成色
-	const qualityListRef = ref(null);
-	const qualityDataLoadFlag = ref(false);
-	const qualityList = ref([]);
-	const qualityOriginList = ref([]);
-	const formQuality = ref({});
-
-	const getQualityList = function() {
-		return getProductQualityAllApi().then(res => {
-			if (res.status == 200) {
-				qualityOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => `${item.name}---${item.desc}`));
-				qualityList.value = result;
-				setTimeout(() => {
-					qualityDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取成色错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取成色错误`)
-		});
-	}
-
-	const openQualityIndex = function() {
-		qualityListRef.value.open();
-	}
-
-	const qualityBindClick = function(source) {
-		let str = source.name;
-		try {
-			const name = str.substring(0, str.indexOf('-'));
-			const result = qualityOriginList.value.find(item => item.name == name);
-			if (result) {
-				formQuality.value = result;
-				formData.value.productQualityId = result.id;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
 
 	//来源
 	const originList = ref([]);
@@ -510,246 +311,15 @@
 		})
 	}
 
-	//仓库
-	const storeListRef = ref(null);
-	const storeDataLoadFlag = ref(false);
-	const storeList = ref([]);
-	const storeOriginList = ref([]);
-	const formStore = ref({});
-
-	const getStoreList = function() {
-		return getProductStorehouseAllApi().then(res => {
-			if (res.status == 200) {
-				storeOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				storeList.value = result;
-				setTimeout(() => {
-					storeDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取仓库错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取仓库错误`)
-		});
-	}
-
-	const openStoreIndex = function() {
-		storeListRef.value.open();
-	}
-
-	const storeBindClick = function(source) {
-		let str = source.name;
-		try {
-			const result = storeOriginList.value.find(item => item.name == str);
-			if (result) {
-				formStore.value = result;
-				formData.value.productStoreId = result.id;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	//材质
-	const materialListRef = ref(null);
-	const materialDataLoadFlag = ref(false);
-	const materialList = ref([]);
-	const materialOriginList = ref([]);
-	const formMaterial = ref("");
-
-	const getMaterialList = function() {
-		return getProductMaterialAllApi().then(res => {
-			if (res.status == 200) {
-				materialOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				materialList.value = result;
-				setTimeout(() => {
-					materialDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取材质错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取材质错误`)
-		});
-	}
-
-	const openMaterialIndex = function() {
-		materialListRef.value.open();
-	}
-
-	const materialBindClick = function(source) {
-		try {
-			const result = source.map(item => item.name).join(',')
-			if (result) {
-				formMaterial.value = result;
-				formData.value.productMaterial = result;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	//买手
-	const userListRef = ref(null);
-	const userDataLoadFlag = ref(false);
-	const userList = ref([]);
-	const userOriginList = ref([]);
-	const formUser = ref({});
-
-	const getUserList = function() {
-		return getAllUserApi().then(res => {
-			if (res.status == 200) {
-				userOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => `${item.nickname}(${item.role.name})`));
-				userList.value = result;
-				setTimeout(() => {
-					userDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取买手错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取买手错误`)
-		});
-	}
-
-	const openUserIndex = function() {
-		userListRef.value.open();
-	}
-
-	const userBindClick = function(source) {
-		let str = source.name;
-		try {
-			str = str.substring(0, str.indexOf('('))
-			const result = userOriginList.value.find(item => item.nickname == str);
-			if (result) {
-				formUser.value = result;
-				formData.value.buyer = result.id;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	const getMySelf = function() {
-		if (!_id) {
-			getUserInfoApi().then(res => {
-				if (res.status == 200) {
-					formUser.value = res.data;
-					formData.value.buyer = res.data.id;
-				} else {
-					errorToast(res.message || `获取用户信息错误`)
-				}
-			}).catch(res => {
-				errorToast(res.message || `获取用户信息错误`)
-			});
-		}
-	}
-
-	//标签
-	const tagListRef = ref(null);
-	const tagDataLoadFlag = ref(false);
-	const tagList = ref([]);
-	const tagOriginList = ref([]);
-	const formTag = ref("");
-
-	const getTagList = function() {
-		return getProductTagAllApi().then(res => {
-			if (res.status == 200) {
-				tagOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				tagList.value = result;
-				setTimeout(() => {
-					tagDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取标签错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取标签错误`)
-		});
-	}
-
-	const openTagIndex = function() {
-		tagListRef.value.open();
-	}
-
-	const tagBindClick = function(source) {
-		try {
-			const result = source.map(item => item.name).join(',')
-			if (result) {
-				formTag.value = result;
-				formData.value.productTag = result;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	//附件
-	const attachListRef = ref(null);
-	const attachDataLoadFlag = ref(false);
-	const attachList = ref([]);
-	const attachOriginList = ref([]);
-	const formAttach = ref("");
-
-	const getAttachList = function() {
-		return getProductAttachAllApi().then(res => {
-			if (res.status == 200) {
-				attachOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				attachList.value = result;
-				setTimeout(() => {
-					attachDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取附件错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取附件错误`)
-		});
-	}
-
-	const openAttachIndex = function() {
-		attachListRef.value.open();
-	}
-
-	const attachBindClick = function(source) {
-
-		try {
-			const result = source.map(item => item.name).join(',')
-			if (result) {
-				formAttach.value = result;
-				formData.value.productAttach = result;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
 	//编辑
 	import {
 		getProductInfoOneApi
 	} from '@/api/product.info';
 
-	const formData = ref({});
+	const formData = ref({
+		inTime: moment().format('YYYY-MM-DD'),
+		arrivalTime: moment().format('YYYY-MM-DD')
+	});
 	const getOne = function(id) {
 		return getProductInfoOneApi(id).then(res => {
 			if (_.isEqual(_.get(res, "status"), 200)) {
@@ -761,64 +331,8 @@
 					iconRef.value.setItems(imgs);
 				}
 
-				const productTypeId = _.get(res, "data.productTypeId");
-				if (productTypeId) {
-					const r = typeOriginList.value.find(item => item.id == productTypeId);
-					if (r) formType.value = r;
-				}
-
-				const productCategoryId = _.get(res, "data.productCategoryId");
-				if (productCategoryId) {
-					const r = categoryOriginList.value.find(item => item.id == productCategoryId);
-					if (r) formCategory.value = r;
-				}
-
-				const productQualityId = _.get(res, "data.productQualityId");
-				if (productCategoryId) {
-					const r = qualityOriginList.value.find(item => item.id == productQualityId);
-					if (r) formQuality.value = r;
-				}
-
-				const productStoreId = _.get(res, "data.productStoreId");
-				if (productStoreId) {
-					const r = storeOriginList.value.find(item => item.id == productStoreId);
-					if (r) formStore.value = r;
-				}
-
-				if (formData.value.forPeople) {
-					forPeopleIndex.value = formData.value.forPeople - 1;
-					formData.value.forPeople = formData.value.forPeople - 1;
-				}
-				if (formData.value.size) {
-					sizeIndex.value = formData.value.size - 1;
-					formData.value.size = formData.value.size - 1;
-				}
-				if (formData.value.arrivalTime) arrivalTimeIndex.value = moment(formData.value.arrivalTime)
-					.format('YYYY-MM-DD');
-				if (formData.value.inTime) inTimeIndex.value = moment(formData.value.inTime).format(
-					'YYYY-MM-DD');
-
-				const productMaterial = _.get(res, "data.productMaterial");
-				if (productMaterial) {
-					formMaterial.value = productMaterial;
-				}
-
-				const buyer = _.get(res, "data.buyer");
-				if (buyer) {
-					const r = userOriginList.value.find(item => item.id == buyer);
-					if (r) formUser.value = r;
-				}
-
-				const productTag = _.get(res, "data.productTag");
-				if (productTag) {
-					formTag.value = productTag;
-				}
-
-				const productAttach = _.get(res, "data.productAttach");
-				if (productAttach) {
-					formAttach.value = productAttach;
-				}
-
+				formData.value.inTime = moment(formData.value.inTime).format('YYYY-MM-DD');
+				formData.value.arrivalTime = moment(formData.value.arrivalTime).format('YYYY-MM-DD');
 
 			} else {
 				errorToast(_.get(res, "message", "获取产品信息出错"));
@@ -888,39 +402,42 @@
 		let staticList = formIcon.value && formIcon.value.length > 0 && formIcon.value.join(',');
 		if (_.isEmpty(staticList)) staticList = "";
 
-		const params = {
-			title,
-			productTypeId,
-			productQualityId,
-			productCategoryId,
-			productOriginId,
-			originName,
-			productStoreId,
-			staticList,
-			no,
-			costPrice: _.get(formData, "value.costPrice"),
-			sellingPrice: _.get(formData, "value.sellingPrice"),
-			peerPrice: _.get(formData, "value.peerPrice"),
-			liveBroadcastPrice: _.get(formData, "value.liveBroadcastPrice"),
-			counterPrice: _.get(formData, "value.counterPrice"),
-			type: _.get(formData, "value.type"),
-			laserMarking: _.get(formData, "value.laserMarking"),
-			forPeople: _.get(formData, "value.forPeople") + 1,
-			size: _.get(formData, "value.size") + 1,
-			productMaterial: _.get(formData, "value.productMaterial"),
-			color: _.get(formData, "value.color"),
-			count: _.get(formData, "value.count"),
-			arrivalTime: _.get(formData, "value.arrivalTime", _.get(arrivalTimeIndex, "value")),
-			inTime: _.get(formData, "value.inTime", _.get(inTimeIndex, "value")),
-			buyer: _.get(formData, "value.buyer"),
-			productTag: _.get(formData, "value.productTag"),
-			productAttach: _.get(formData, "value.productAttach"),
-			description: _.get(formData, "value.description"),
-			status: 1,
-			workflow: 2,
-			staticList,
-			sizes: _.get(formData, "value.sizes")
-		}
+		const params = JSON.parse(JSON.stringify(formData.value));
+		params["staticList"] = staticList;
+
+		// const params = {
+		// 	title,
+		// 	productTypeId,
+		// 	productQualityId,
+		// 	productCategoryId,
+		// 	productOriginId,
+		// 	originName,
+		// 	productStoreId,
+		// 	staticList,
+		// 	no,
+		// 	costPrice: _.get(formData, "value.costPrice"),
+		// 	sellingPrice: _.get(formData, "value.sellingPrice"),
+		// 	peerPrice: _.get(formData, "value.peerPrice"),
+		// 	liveBroadcastPrice: _.get(formData, "value.liveBroadcastPrice"),
+		// 	counterPrice: _.get(formData, "value.counterPrice"),
+		// 	type: _.get(formData, "value.type"),
+		// 	laserMarking: _.get(formData, "value.laserMarking"),
+		// 	forPeople: _.get(formData, "value.forPeople") + 1,
+		// 	size: _.get(formData, "value.size") + 1,
+		// 	productMaterial: _.get(formData, "value.productMaterial"),
+		// 	color: _.get(formData, "value.color"),
+		// 	count: _.get(formData, "value.count"),
+		// 	arrivalTime: _.get(formData, "value.arrivalTime", _.get(arrivalTimeIndex, "value")),
+		// 	inTime: _.get(formData, "value.inTime", _.get(inTimeIndex, "value")),
+		// 	buyer: _.get(formData, "value.buyer"),
+		// 	productTag: _.get(formData, "value.productTag"),
+		// 	productAttach: _.get(formData, "value.productAttach"),
+		// 	description: _.get(formData, "value.description"),
+		// 	status: 1,
+		// 	workflow: 2,
+		// 	staticList,
+		// 	sizes: _.get(formData, "value.sizes")
+		// }
 
 		let req;
 		if (_id) {
@@ -945,11 +462,25 @@
 		});
 
 	}
-	
+
 	const dialogConfirm = function() {
-		
+		deleteProductInfoApi(_id).then(res => {
+			if (res.status === 200) {
+				successToast(`删除成功，正在为您跳转`);
+				setTimeout(() => {
+					uni.navigateTo({
+						url: "/pages/product/info/index"
+					})
+				}, 1000)
+			} else {
+				errorToast(res.message || `产品删除错误`)
+			}
+		}).catch(res => {
+			errorToast(res.message || `产品删除错误`)
+		})
 	}
 
+	const alertDialog = ref(null);
 	const deleteItem = function() {
 		if (_id) {
 			alertDialog.value.open()

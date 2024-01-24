@@ -2,7 +2,7 @@
 	<view class="cu-form-group" @click="openTypeIndex">
 		<view class="title">{{title}} {{req ? "*" : ""}}</view>
 		<view>
-			<text>{{formType && formType.join(',') || "请选择"}}</text>
+			<text>{{(formType && formType.join(',')) || v || "请选择"}}</text>
 			<text class="cuIcon-right"></text>
 		</view>
 	</view>
@@ -20,6 +20,9 @@
 		getProductTagAllApi,
 		getProductAttachAllApi
 	} from "@/api/product.info";
+	import {
+		getCustomerTagAllApi
+	} from "@/api/customerTag";
 	import indexSelect from '@/components/indexSelect.vue'
 	import {
 		filterArrayByIndex
@@ -34,6 +37,7 @@
 		nextTick
 	} from 'vue';
 
+
 	//集合
 	const a = {
 		getProductTypeAllApi,
@@ -41,7 +45,8 @@
 		getProductStorehouseAllApi,
 		getProductMaterialAllApi,
 		getProductTagAllApi,
-		getProductAttachAllApi
+		getProductAttachAllApi,
+		getCustomerTagAllApi
 	}
 
 	const props = defineProps({
@@ -67,6 +72,10 @@
 		},
 		otherName: {
 			type: String
+		},
+		v: {
+			type: Object,
+			required: false
 		}
 	});
 

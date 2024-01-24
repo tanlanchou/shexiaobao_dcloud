@@ -1,7 +1,9 @@
 <template>
 	<picker @change="forPeoplePickerChange" :value="forPeopleIndex" :range="productForPeopleMap">
 		<view class="picker">
-			{{ forPeopleIndex > -1 ? productForPeopleMap[forPeopleIndex] : modelValue > -1 ? productForPeopleMap[modelValue] : '请选择' }}
+			{{ forPeopleIndex > -1 ? productForPeopleMap[forPeopleIndex] : 
+			(modelValue != undefined && modelValue > -1) ? productForPeopleMap[mode == "normal"? modelValue : modelValue - 1] : 
+			'请选择' }}
 		</view>
 	</picker>
 </template>
@@ -22,17 +24,19 @@
 		modelValue: {
 			type: Number,
 			default: -1
+		},
+		mode: {
+			type: String,
+			default: "normal"
 		}
 	});
 
 	const emit = defineEmits(['update:modelValue']);
-
 	const productForPeopleMap = ref(a[props.name]);
 	const forPeopleIndex = ref(-1);
-
 	const forPeoplePickerChange = function(e) {
 		forPeopleIndex.value = e.detail.value;
-		emit('update:modelValue', forPeopleIndex.value);
+		emit('update:modelValue', props.mode == "normal" ? forPeopleIndex.value : forPeopleIndex.value + 1);
 	}
 
 	function clear() {

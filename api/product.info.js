@@ -18,6 +18,14 @@ export const updateProductInfoApi = function(id, data) {
 	})
 }
 
+export const deleteProductInfoApi = function(id) {
+	return request({
+		url: `/product/info/${id}`,
+		method: `delete`,
+		isValid: true,
+	})
+}
+
 export const getProductAllInfoApi = function(page, data) {
 	return request({
 		url: `/product/info/search/all/${page}`,

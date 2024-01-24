@@ -9,84 +9,54 @@
 				<text class="cuIcon-delete"></text> 删除
 			</button>
 		</list-header>
-		<uni-card class="form_card card_fixed">
-			<form>
+
+		<uni-card class="card_fixed">
+			<view class="form_list">
 				<view class="cu-form-group">
-					<view class="uni-padding-wrap">
-						<uni-section title="名称 *" type="line">
-							<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
-								v-model="formData.name" placeholder="请输入名称" prefix-icon="font"></uni-easyinput>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap">
-						<uni-section title="客户编号 *" type="line">
-							<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
-								v-model="formData.no" placeholder="建议手机号后4位"
-								prefix-icon="smallcircle-filled"></uni-easyinput>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap">
-						<uni-section title="维护人选择 *" type="line">
-							<text>{{formUser.nickname}}</text> &nbsp; <button class="cu-btn bg-green round"
-								@click="openUserIndex">
-								<text class="cuIcon-selection"></text> 选择维护人
-							</button>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap mb-20">
-						<uni-section title="客户来源 *" type="line">
-							<text>{{formOrigin.name}}</text> &nbsp; <button class="cu-btn bg-green round"
-								@click="openOriginIndex">
-								<text class="cuIcon-selection"></text> 选择来源
-							</button>
-						</uni-section>
-					</view>
+					<view class="title">名称 *</view>
+					<input type="text" v-model="formData.name" placeholder="请输入" />
 				</view>
-			</form>
+				<view class="cu-form-group">
+					<view class="title">客户编号 *</view>
+					<input type="text" v-model="formData.no" placeholder="请输入" />
+				</view>
+				<select-index-single-sync title="维护人" :v="formData.user" :req="true" name="getAllUserApi"
+					v-model="formData.maintenanceMan"></select-index-single-sync>
+				<select-index-single-sync title="客户来源" :v="formData.customerOrigin" :req="true" name="getOriginAllApi"
+					v-model="formData.customerOriginId"></select-index-single-sync>
+			</view>
+
 		</uni-card>
+		<view class="form_split"> --------其他信息(可选) -------- </view>
+		<uni-card>
+			<view class="form_list">
+				<view class="cu-form-group">
+					<view class="title">类型</view>
+					<uni-data-checkbox mode="tag" v-model="formData.type" :localdata="customerMap"></uni-data-checkbox>
+				</view>
+				<view class="cu-form-group">
+					<view class="title">客户意向</view>
+					<uni-data-checkbox mode="tag" multiple v-model="formData.intentionType"
+						:localdata="intentionTypeMap"></uni-data-checkbox>
+				</view>
+				<view class="cu-form-group  align-start">
+					<view class="title">客户意向描述</view>
+					<textarea maxlength="-1" v-model="formData.intention" placeholder="请输入"></textarea>
+				</view>
+				<view class="cu-form-group">
+					<view class="title">性别</view>
+					<uni-data-checkbox mode="tag" v-model="formData.sex" :localdata="sexMap"></uni-data-checkbox>
+				</view>
+				<select-index-muplt-sync title="客户标签" :v="formData.customerTag" :req="false" name="getCustomerTagAllApi"
+					v-model="formData.customerTag"></select-index-muplt-sync>
+			</view>
+		</uni-card>
+		<view class="form_split"> --------头像(可选) -------- </view>
 		<uni-card class="form_card">
-			<form>
-				<view class="cu-form-group">
-					<view class="uni-padding-wrap">
-						<uni-section title="客户意向" type="line">
-							<uni-data-checkbox mode="tag" multiple v-model="formData.intentionType"
-								:localdata="intentionTypeMap"></uni-data-checkbox>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap">
-						<uni-section title="客户意向描述" type="line">
-							<uni-easyinput type="textarea" autoHeight v-model="formData.intention"
-								placeholder="请输入客户意向描述"></uni-easyinput>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap">
-						<uni-section title="类型" type="line">
-							<uni-data-checkbox mode="tag" v-model="formData.type"
-								:localdata="customerMap"></uni-data-checkbox>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap">
-						<uni-section title="性别" type="line">
-							<uni-data-checkbox mode="tag" v-model="formData.sex"
-								:localdata="sexMap"></uni-data-checkbox>
-						</uni-section>
-					</view>
-					<view class="uni-padding-wrap mb-20">
-						<uni-section title="客户标签" type="line">
-							<text v-text="formData.customerTag"></text> &nbsp; <button class="cu-btn bg-green round"
-								@click="openTagIndex">
-								<text class="cuIcon-selection"></text> 选择标签
-							</button>
-						</uni-section>
-					</view>
-				</view>
-			</form>
-		</uni-card>
-		<uni-card class="form_card" title="头像">
 			<form>
 				<view class="cu-form-group" style="padding-top: 5px !important;">
 
-					<sunui-upimg url="http://192.168.2.247:3001/static/upload" ref="iconRef" title="上传头像"
+					<sunui-upimg url="http://127.0.0.1:3001/static/upload" ref="iconRef" title="上传头像"
 						@upload="handleLoaded" :before-upload="handleChange" :number="1">
 						<template v-slot:icon>
 							<text class="s-add-list-btn-icon">+</text>
@@ -95,28 +65,14 @@
 				</view>
 			</form>
 		</uni-card>
+		<view class="form_split"> --------头像(可选) -------- </view>
 		<uni-card class="form_card">
-			<form>
-				<view class="cu-form-group">
-					<view class="uni-padding-wrap mb-20">
-						<uni-section title="描述" type="line">
-							<uni-easyinput type="textarea" autoHeight v-model="formData.desc"
-								placeholder="请输入描述"></uni-easyinput>
-						</uni-section>
-					</view>
-				</view>
-			</form>
+			<view class="cu-form-group  align-start">
+				<view class="title">描述</view>
+				<textarea maxlength="-1" v-model="formData.desc" placeholder="请输入"></textarea>
+			</view>
 		</uni-card>
 	</view>
-
-	<index-select ref="userListRef" title="维护人选择" v-if="userDataLoadFlag" :list="userList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="userBindClick"></index-select>
-
-	<index-select ref="tagListRef" title="客户标签" v-if="tagDataLoadFlag" :list="tagList" :isSingle="false"
-		:isShowSelect="true" @indexSelect="tagBindClick"></index-select>
-
-	<index-select ref="originListRef" title="客户来源" v-if="originDataLoadFlag" :list="originList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="originBindClick"></index-select>
 
 	<uni-popup ref="alertDialog" type="dialog">
 		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
@@ -128,8 +84,8 @@
 	import {
 		isLogin
 	} from '@/common/login';
-
-	import requst from "@/common/request.js"
+	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
+	import selectIndexMupltSync from "@/components/selectIndexMupltSync.vue";
 	import _, {
 		get
 	} from "lodash";
@@ -151,29 +107,20 @@
 	import {
 		addCustomerApi,
 		deleteCustomerOneApi,
-		getCustomerAllApi,
 		getCustomerOneApi,
 		updateCustomerApi
 	} from "@/api/customer";
+	import {
+		getUserInfoApi
+	} from '@/api/user';
 	import {
 		intentionTypeMap,
 		sexMap,
 		customerMap
 	} from '@/common/enum';
-	import {
-		getCustomerTagAllApi
-	} from '@/api/customerTag';
-	import {
-		getAllUserApi,
-		getUserInfoApi
-	} from '@/api/user';
-	import indexSelect from '@/components/indexSelect.vue'
-	import {
-		filterArrayByIndex
-	} from '@/common/indexSelect';
-	import {
-		getOriginAllApi
-	} from '@/api/origin.js';
+
+
+
 
 	isLogin()
 
@@ -183,12 +130,9 @@
 	onLoad((options) => {
 		if (options.id) _id = options.id;
 
-		Promise.all([getTagList(), getUserList(), getOriginList()]).then(res => {
-			getOne(_id)
-		})
-
 		if (_id) {
 			title.value = "客户编辑";
+			getOne(_id)
 		} else {
 			title.value = "客户添加";
 			getMySelf();
@@ -213,142 +157,6 @@
 	}
 
 
-	//标签	
-	const tagListRef = ref(null);
-	const tagDataLoadFlag = ref(false);
-	const tagList = ref([]);
-	const tagOriginList = ref([]);
-
-	const getTagList = function() {
-		return getCustomerTagAllApi().then(res => {
-			if (res.status === 200) {
-				tagOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				tagList.value = result;
-				setTimeout(() => {
-					tagDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取客户标签错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取客户标签错误`)
-		});
-	}
-
-	const tagBindClick = function(source) {
-		try {
-			formData.value.customerTag = source.map(item => item.name).join(',')
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	const openTagIndex = function() {
-		tagListRef.value.open();
-	}
-
-	//用户
-	const userListRef = ref(null);
-	const userDataLoadFlag = ref(false);
-	const userList = ref([]);
-	const userOriginList = ref([]);
-
-	const getUserList = function() {
-		return getAllUserApi().then(res => {
-			if (res.status == 200) {
-				userOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => `${item.nickname}(${item.phoneNumber})`));
-				userList.value = result;
-				setTimeout(() => {
-					userDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取用户错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取用户错误`)
-		});
-	}
-
-	const openUserIndex = function() {
-		userListRef.value.open();
-	}
-
-	const userBindClick = function(source) {
-		let str = source.name;
-		try {
-			let tempArr = str.split('(');
-			let phoneNumber = tempArr[1].substring(0, tempArr[1].length - 1);
-			const result = userOriginList.value.find(item => item.phoneNumber == phoneNumber);
-			if (result) {
-				formUser.value = result;
-			} else {
-				errorToast("数据格式出错, 请刷新后重试");
-			}
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
-
-	const getMySelf = function() {
-		if (!_id) {
-			getUserInfoApi().then(res => {
-				if (res.status == 200) {
-					formUser.value = res.data;
-				} else {
-					errorToast(res.message || `获取用户信息错误`)
-				}
-			}).catch(res => {
-				errorToast(res.message || `获取用户信息错误`)
-			});
-		}
-	}
-
-
-	//来源
-	const originListRef = ref(null);
-	const originDataLoadFlag = ref(false);
-	const originList = ref([]);
-	const originOriginList = ref([]);
-	const formOrigin = ref({});
-
-	const getOriginList = function() {
-		return getOriginAllApi().then(res => {
-			if (res.status === 200) {
-				originOriginList.value = JSON.parse(JSON.stringify(res.data));
-				let result = filterArrayByIndex(res.data.map(item => item.name));
-				originList.value = result;
-				setTimeout(() => {
-					originDataLoadFlag.value = true;
-				})
-			} else {
-				errorToast(res.message || `获取客户标签错误`)
-			}
-		}).catch(res => {
-			errorToast(res.message || `获取客户标签错误`)
-		});
-	}
-
-	const openOriginIndex = function() {
-		originListRef.value.open();
-	}
-	const originBindClick = function(source) {
-		try {
-			const result = originOriginList.value.find(item => item.name == source.name);
-			if (!result) {
-				errorToast("来源数据错误");
-				return;
-			}
-			formData.value.customerOriginId = result.id;
-			formOrigin.value = result;
-		} catch (ex) {
-			console.error(ex.message);
-			errorToast("数据格式出错, 请刷新后重试");
-		}
-	}
 
 	//上传
 	const iconRef = ref(null)
@@ -387,16 +195,6 @@
 						formData.value.img
 					]);
 				}
-
-				const userResult = userOriginList.value.find(item => item.id == res.data.maintenanceMan);
-				if (userResult) {
-					formUser.value = userResult;
-				}
-
-				const originResult = originOriginList.value.find(item => item.id == res.data.customerOriginId);
-				if (originResult) {
-					formOrigin.value = originResult;
-				}
 			} else {
 				errorToast(res.message || `获取列表错误`)
 			}
@@ -412,18 +210,19 @@
 			return;
 		}
 
-		if (!_.get(formData, "value.name") || _.get(formData, "value.no.length") < 2 || _.get(formData,
+		if (!_.get(formData, "value.no") || _.get(formData, "value.no.length") < 2 || _.get(formData,
 				"value.no.length") > 10) {
-			errorToast('客户编号, 成都2-10个字');
+			errorToast('客户编号, 长度2-10个字');
 			return;
 		}
 
-		if (!_.get(formUser, "value") || !_.get(formUser, "value.id")) {
+		if (_.get(formData, "value.maintenanceMan") === undefined || _.get(formUser, "value.maintenanceMan") === null) {
 			errorToast('请选择维护人');
 			return;
 		}
 
-		if (!_.get(formOrigin, "value") || !_.get(formOrigin, "value.id")) {
+		if (_.get(formData, "value.customerOriginId") === undefined || _.get(formData, "value.customerOriginId") ===
+			null) {
 			errorToast('请选择客户来源');
 			return;
 		}
@@ -433,19 +232,16 @@
 	const add = function() {
 		if (!validateParams()) return;
 
-		const params = {};
-		params.name = _.get(formData.value, "name");
-		params.no = _.get(formData.value, "no");
-		params.maintenanceMan = _.get(formUser.value, "id");
-		params.intention = _.get(formData.value, "intention");
-		params.intentionType = _.join(_.get(formData.value, "intentionType"), ',');
-		params.type = _.get(formData.value, "type");
-		params.sex = _.get(formData.value, "sex");
-		params.customerTag = _.get(formData.value, "customerTag");
-		params.customerOriginId = _.get(formOrigin.value, "id");
+		const params = Object.assign({}, formData.value);
 		params.img = formIcon.value;
-		params.desc = _.get(formData.value, "desc");
 
+		if (params.customerTag && Array.isArray(params.customerTag)) {
+			params.customerTag = params.customerTag.join(',')
+		}
+
+		if (params.intentionType && Array.isArray(params.intentionType)) {
+			params.intentionType = params.intentionType.join(',')
+		}
 
 		let request;
 		if (_.isEmpty(_id)) {
@@ -468,6 +264,20 @@
 		}).catch(res => errorToast(_.get(res, "message", "提交客户信息出错")))
 	}
 
+	const getMySelf = function() {
+		if (!_id) {
+			getUserInfoApi().then(res => {
+				if (res.status == 200) {
+					formData.value.user = res.data;
+					formData.value.maintenanceMan = res.data.id;
+				} else {
+					errorToast(res.message || `获取用户信息错误`)
+				}
+			}).catch(res => {
+				errorToast(res.message || `获取用户信息错误`)
+			});
+		}
+	}
 
 	const init = function() {
 		if (_id) {

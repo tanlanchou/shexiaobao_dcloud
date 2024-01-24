@@ -31,50 +31,56 @@
 		<text class="cuIcon-pullright"></text>
 	</view>
 	<scroll-view scroll-y class="DrawerWindow" :class="modalName=='viewModal'?'show':''">
-		<uni-card>
-			<uni-section title="昵称" type="line">
-				<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false"
-					v-model="searchData.nickname" placeholder="昵称" prefix-icon="contact"></uni-easyinput>
-			</uni-section>
-			<uni-section title="手机号" type="line">
-				<uni-easyinput class="input-border-bottom" type="text" :inputBorder="false"
-					v-model="searchData.phoneNumber" placeholder="手机号" prefix-icon="phone"></uni-easyinput>
-			</uni-section>
-			<uni-section title="角色" type="line">
-				<text>{{searchData.role && this.searchData.role.name}}</text> &nbsp; <button
-					class="cu-btn bg-green round" @click="this.$refs.roleListRef.open()">
-					<text class="cuIcon-selection"></text> 选择角色
-				</button>
-			</uni-section>
-			<uni-section title="状态" type="line">
-				<text>{{ userstatsToWords(this.searchData.status) }}</text> &nbsp; <button class="cu-btn bg-green round"
-					@click="this.$refs.statusListRef.open()">
-					<text class="cuIcon-vip"></text> 选择状态
-				</button>
-			</uni-section>
-			<view class="mt-40">
-				<button class="cu-btn bg-purple" @click="filter">
+		<view class="search_body form_card">
+			<view class="cu-form-group align-start">
+				<view class="title">排序</view>
+				<picker-single v-model="searchData.order" name="userOrderSearch"></picker-single>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">昵称</view>
+				<input type="text" v-model="searchData.nickname" placeholder="请输入" />
+			</view>
+			<view class="cu-form-group">
+				<view class="title">手机号</view>
+				<input type="number" v-model="searchData.phoneNumber" placeholder="请输入" />
+			</view>
+			<select-index-single-sync ref="roleRef" title="角色" :req="false" name="getAllRoleApi"
+				v-model="searchData.roleId"></select-index-single-sync>
+			<view class="cu-form-group">
+				<view class="title">状态</view>
+				<picker-single ref="statusRef" v-model="searchData.status" mode="plus"
+					name="userStatusToWords"></picker-single>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">创建时间</view>
+				<uni-datetime-picker :clear-icon="false" :border="false" v-model="searchData.createTimeRange"
+					type="daterange" />
+			</view>
+			<view class="cu-form-group clear_close">
+				<view class="title">登录时间</view>
+				<uni-datetime-picker :clear-icon="false" :border="false" v-model="searchData.loginRange"
+					type="daterange" />
+			</view>
+			<view class="search_action">
+				&nbsp;
+				<button class="cu-btn bg-purple" style="width:40%" @click="filter()">
 					<text class="cuIcon-filter"></text> 筛选
 				</button>
 				&nbsp;
-				<button class="cu-btn bg-red" @click="searchData = {}">
+				<button class="cu-btn bg-red" style="width:40%" @click="searchClear">
 					<text class="cuIcon-refresh"></text> 清空
 				</button>
+				&nbsp;
 			</view>
-
-		</uni-card>
+		</view>
 	</scroll-view>
-
-	<index-select ref="roleListRef" title="角色选择" v-if="roleDataLoadFlag" :list="roleList" :isSingle="true"
-		:isShowSelect="true" @indexSelect="bindClick"></index-select>
-
-	<index-select ref="statusListRef" title="用户状态选择" :list="userStatusList" :isSingle="true" :isShowSelect="true"
-		@indexSelect="statusClick"></index-select>
 </template>
 
 <script>
 	import listHeader from '@/components/listHeader.vue'
 	import youScroll from '@/components/you-scroll.vue'
+	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
+	import pickerSingle from "@/components/pickerSingle.vue";
 	import {
 		errorToast,
 		loadingToast,
@@ -105,7 +111,9 @@
 		components: {
 			listHeader,
 			youScroll,
-			indexSelect
+			indexSelect,
+			selectIndexSingleSync,
+			pickerSingle
 		},
 		mixins: [fullScreenDrawer],
 		data() {
@@ -120,39 +128,15 @@
 				userStatusList: userStatusForIndexSelect,
 			}
 		},
-		onReady() {
+		onShow() {
 			if (!!isLogin()) {
-				this.roleInit();
-				this.init();
+				this.init(true);
 			}
 		},
 		methods: {
 			filter() {
 				this.init(true);
 				this.hideModal();
-			},
-			statusClick(source) {
-				this.searchData.status = userStatusToWords.indexOf(source.name) + 1
-			},
-			userstatsToWords(status) {
-				if (status) {
-					return userStatusToWords[status - 1]
-				}
-			},
-			roleInit() {
-				getAllRoleApi().then(res => {
-					if (res.status == 200) {
-						this.originRoleList = res.data;
-						const arr = this.originRoleList.map(item => item.name);
-						this.roleList = filterArrayByIndex(arr);
-						this.roleDataLoadFlag = true;
-					} else {
-						errorToast(res.message || "获取角色列表失败")
-					}
-				}).catch(res => {
-					console.error(res);
-					errorToast(res.message || "获取角色列表失败")
-				})
 			},
 			init(isClear) {
 				return getAllUserByPageApi(this.pageNumber, this.searchData).then(res => {
@@ -173,8 +157,9 @@
 				})
 			},
 			onLoadMore() {
-
-				const pageCount = Math.ceil(this.total / 20)
+				const pageCount = Math.ceil(this.total / 20);
+				console.log("pageCount", pageCount)
+				console.log("this.pageNumber", this.pageNumber)
 				if (pageCount > this.pageNumber) {
 					this.pageNumber += 1;
 					this.init();
@@ -185,18 +170,11 @@
 					url: `/pages/index/user/detail?id=${item.id}`
 				})
 			},
-			bindClick(source) {
-				const result = this.originRoleList.find(item => {
-					return item.name == source.name;
-				});
-				if (!result) {
-					errorToast(`未知错误,请退出后重试`);
-					return;
-				}
-
-				this.searchData.role = result;
-				this.searchData.roleId = result.id;
-			},
+			searchClear() {
+				this.searchData = {};
+				this.$refs.statusRef.clear();
+				this.$refs.roleRef.clear();
+			}
 		}
 	}
 </script>

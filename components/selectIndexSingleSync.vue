@@ -20,8 +20,18 @@
 		getProductAttachAllApi
 	} from "@/api/product.info";
 	import {
+		getAllRoleApi
+	} from "@/api/role";
+	import {
 		getAllUserApi
-	} from "../api/user";
+	} from "@/api/user";
+	import {
+		getOriginAllApi
+	} from "@/api/origin";
+	import {
+		getCustomerTagAllApi
+	} from "@/api/customerTag";
+
 
 
 	import indexSelect from '@/components/indexSelect.vue'
@@ -37,6 +47,7 @@
 		defineEmits,
 		nextTick
 	} from 'vue';
+	import request from "@/common/request";
 
 	//集合
 	const a = {
@@ -45,7 +56,10 @@
 		getProductStorehouseAllApi,
 		getAllUserApi,
 		getProductTagAllApi,
-		getProductAttachAllApi
+		getProductAttachAllApi,
+		getAllRoleApi,
+		getOriginAllApi,
+		getCustomerTagAllApi
 	}
 
 	const props = defineProps({
@@ -87,9 +101,22 @@
 	const typeOriginList = ref([]);
 	const formType = ref({});
 
+	const buildFunc = function(name) {
+
+		return request({
+			url: name,
+			method: `get`,
+			isValid: true
+		});
+	}
+
 	//getProductTypeAllApi
 	const getTypeList = function() {
-		return a[props.name]().then(res => {
+		let func = a[props.name];
+		if (func === undefined || func === null) {
+			func = () => buildFunc(props.name);
+		}
+		return func().then(res => {
 			if (res.status == 200) {
 				typeOriginList.value = JSON.parse(JSON.stringify(res.data));
 				let result;
@@ -120,9 +147,9 @@
 			typeListRef.value.open();
 		}
 	}
-	
+
 	function getName(data) {
-		if(data) {
+		if (data) {
 			return data.name || data.nickname
 		}
 		return;
@@ -155,11 +182,11 @@
 	if (!props.ljz) {
 		getTypeList()
 	}
-	
+
 	function clear() {
 		formType.value = {};
 	}
-	
+
 	defineExpose({
 		clear
 	})

@@ -37,17 +37,27 @@
 		<text class="cuIcon-pullright"></text>
 	</view>
 	<scroll-view scroll-y class="DrawerWindow" :class="modalName=='viewModal'?'show':''">
+		<!-- <select-index-single-sync v-if="formData.parentId != 0" title="父节点" :v="formData.parent" :req="false"
+			:name="_.get(props, 'options.request.findAll') || '/' +_.get(props, 'options.name') + '?pid=0'"
+			v-model="formData.parentId">
+		</select-index-single-sync> -->
+		<view class="search_body form_card">
+			<view class="cu-form-group ">
+				<view class="title">名称</view>
+				<input type="text" v-model="search.name" placeholder="请输入" />
+			</view>
+			<select-index-single-sync ref="parentIdSearchRef" title="父节点" :req="false"
+				:name="_.get(props, 'options.request.findAll') || '/' +_.get(props, 'options.name') + '?pid=0'"
+				v-model="search.parentId">
+			</select-index-single-sync>
+		</view>
 		<uni-card>
-			<uni-section title="名称" type="line">
-				<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false" v-model="search.name"
-					placeholder="名称" prefix-icon="contact"></uni-easyinput>
-			</uni-section>
 			<view class="mt-10">
-				<button class="cu-btn bg-purple" @click="init">
+				<button class="cu-btn bg-purple" @click="init()">
 					<text class="cuIcon-filter"></text> 筛选
 				</button>
 				&nbsp;
-				<button class="cu-btn bg-red" @click="search = {}">
+				<button class="cu-btn bg-red" @click="clear">
 					<text class="cuIcon-refresh"></text> 清空
 				</button>
 			</view>
@@ -58,6 +68,7 @@
 <script setup>
 	import listHeader from "@/components/listHeader.vue"
 	import youScroll from "@/components/you-scroll.vue"
+	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
 	import requst from "@/common/request.js"
 	import {
 		isLogin
@@ -96,9 +107,9 @@
 
 	if (!props.options || !props.options.name) {
 		errorToast(`单个名称组件参数错误`);
-		// uni.navigateBack({
-		// 	delta: 1
-		// })
+		uni.navigateBack({
+			delta: 1
+		})
 	}
 
 	//权限处理
@@ -110,9 +121,9 @@
 	const deletePowerName = _.get(props, "options.power.delete") || `${powerBase}_delete`;
 	if (!checkPower(findAllPowerName)) {
 		errorToast(`您没有权限访问这个模块`);
-		// uni.navigateBack({
-		// 	delta: 1
-		// })
+		uni.navigateBack({
+			delta: 1
+		})
 	}
 
 	const createPowerEnable = ref(checkPower(createPowerName));
@@ -120,6 +131,7 @@
 
 	//参数
 	const list = ref([]);
+	const parentIdSearchRef = ref(null);
 
 	//API处理
 	const search = ref({});
@@ -147,11 +159,12 @@
 
 	const init = function(done) {
 		getList({
-			name: search.value.name
+			name: search.value.name,
+			pid: search.value.parentId
 		}).then(res => {
 			if (res.status === 200) {
 				let result = res.data;
-				if (search.value.name) {
+				if (search.value.name || search.value.pid !== undefined) {
 					list.value = result;
 				} else {
 					const tempResult = [];
@@ -165,7 +178,8 @@
 			errorToast(res.message || `${title}列表查询错误`)
 		}).finally(() => {
 			hideModal();
-			if (done) {
+			if (typeof done !== 'undefined') {
+				console.log(done)
 				done();
 			}
 		})
@@ -194,6 +208,11 @@
 	onShow(() => {
 		init();
 	})
+
+	const clear = function() {
+		search.value = {};
+		parentIdSearchRef.value.clear();
+	}
 
 	const onPullDown = function(done) {
 		init(done);

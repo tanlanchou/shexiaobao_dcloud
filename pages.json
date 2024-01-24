@@ -263,6 +263,22 @@
 					"titleNView": false
 				}
 			}
+		},
+		{
+			"path": "pages/order/info/list",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/order/info/add",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
 		}
 	],
 	"globalStyle": {

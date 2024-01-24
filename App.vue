@@ -122,6 +122,7 @@
 	.search_body {
 		position: relative;
 		border-radius: 20px;
+		text-align: right;
 	}
 
 	.search_action {
@@ -129,6 +130,7 @@
 		bottom: 0.5rem;
 		width: 100%;
 		height: auto;
+		text-align: left;
 	}
 
 	//input
@@ -187,6 +189,11 @@
 	.input-border-bottom {
 		border-bottom: 1px solid #dddddd;
 	}
+	
+	// form
+	.form_list {
+		text-align: right;
+	}
 
 	// card
 	.card_no_border {
@@ -209,6 +216,11 @@
 	.card_fixed {
 		margin-top: 60px !important;
 	}
+	
+	.form_card .uni-card__content .cu-form-group input {
+		text-align: right;
+	}
+	
 
 
 	// button
