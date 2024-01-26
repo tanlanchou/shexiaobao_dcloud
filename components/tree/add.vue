@@ -1,15 +1,15 @@
 <template>
-	<view>
-		<list-header class="header_fixed" :title="myTitle">
-			<button v-if="updateEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
-				@click="add">
-				<text class="cuIcon-add"></text> 提交
-			</button>
-			<button v-if="deleteEnable && _id > 0" class="cu-btn bg-red" @click="deleteItem">
-				<text class="cuIcon-delete"></text> 删除
-			</button>
-		</list-header>
-		<uni-card class="form_card card_fixed">
+	<list-header class="header_fixed" :title="myTitle">
+		<button v-if="updateEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
+			@click="add">
+			<text class="cuIcon-add"></text> 提交
+		</button>
+		<button v-if="deleteEnable && _id > 0" class="cu-btn bg-red" @click="deleteItem">
+			<text class="cuIcon-delete"></text> 删除
+		</button>
+	</list-header>
+	<scroll-view scroll-y="true" class="card_fixed">
+		<uni-card class="form_card">
 			<view class="cu-form-group ">
 				<view class="title">名称 *</view>
 				<input type="text" v-model="formData.name" placeholder="请输入" />
@@ -20,7 +20,9 @@
 			</select-index-single-sync>
 		</uni-card>
 
-	</view>
+	</scroll-view>
+
+
 
 	<uni-popup ref="alertDialog" type="dialog">
 		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
@@ -91,9 +93,11 @@
 
 	if (!findOneEnable) {
 		errorToast(`您没有权限访问这个模块，正在为您跳转`);
-		uni.navigateBack({
-			delta: 1
-		});
+		setTimeout(() => {
+			uni.navigateBack({
+				delta: 1
+			});
+		}, 1000)
 	}
 
 

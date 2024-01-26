@@ -1,16 +1,15 @@
 <template>
-	<view>
-		<list-header class="header_fixed" :title="title">
-			<button v-if="updatePowerEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
-				@click="add">
-				<text class="cuIcon-add"></text> 提交
-			</button>
-			<button v-if="deletePowerEnable && _id" class="cu-btn bg-red" @click="deleteItem">
-				<text class="cuIcon-delete"></text> 删除
-			</button>
-		</list-header>
-
-		<uni-card class="card_fixed">
+	<list-header class="header_fixed" :title="title">
+		<button v-if="updatePowerEnable || createEnable" class="cu-btn bg-purple mr-10" style="margin-right: 5px;"
+			@click="add">
+			<text class="cuIcon-add"></text> 提交
+		</button>
+		<button v-if="deletePowerEnable && _id" class="cu-btn bg-red" @click="deleteItem">
+			<text class="cuIcon-delete"></text> 删除
+		</button>
+	</list-header>
+	<scroll-view scroll-y="true" class="card_fixed">
+		<uni-card>
 			<view class="form_list">
 				<view class="cu-form-group">
 					<view class="title">名称 *</view>
@@ -28,35 +27,35 @@
 
 		</uni-card>
 		<view class="form_split"> --------其他信息(可选) -------- </view>
-		<uni-card>
-			<view class="form_list">
-				<view class="cu-form-group">
-					<view class="title">类型</view>
-					<uni-data-checkbox mode="tag" v-model="formData.type" :localdata="customerMap"></uni-data-checkbox>
-				</view>
-				<view class="cu-form-group">
-					<view class="title">客户意向</view>
-					<uni-data-checkbox mode="tag" multiple v-model="formData.intentionType"
-						:localdata="intentionTypeMap"></uni-data-checkbox>
-				</view>
-				<view class="cu-form-group  align-start">
-					<view class="title">客户意向描述</view>
-					<textarea maxlength="-1" v-model="formData.intention" placeholder="请输入"></textarea>
-				</view>
-				<view class="cu-form-group">
-					<view class="title">性别</view>
-					<uni-data-checkbox mode="tag" v-model="formData.sex" :localdata="sexMap"></uni-data-checkbox>
-				</view>
-				<select-index-muplt-sync title="客户标签" :v="formData.customerTag" :req="false" name="getCustomerTagAllApi"
-					v-model="formData.customerTag"></select-index-muplt-sync>
+
+		<view class="form_card">
+			<view class="cu-form-group">
+				<view class="title">类型</view>
+				<uni-data-checkbox mode="tag" v-model="formData.type" :localdata="customerMap"></uni-data-checkbox>
 			</view>
-		</uni-card>
+			<view class="cu-form-group">
+				<view class="title">客户意向</view>
+				<uni-data-checkbox mode="tag" multiple v-model="formData.intentionType"
+					:localdata="intentionTypeMap"></uni-data-checkbox>
+			</view>
+			<view class="cu-form-group  align-start">
+				<view class="title">客户意向描述</view>
+				<textarea maxlength="-1" v-model="formData.intention" placeholder="请输入"></textarea>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">性别</view>
+				<uni-data-checkbox mode="tag" v-model="formData.sex" :localdata="sexMap"></uni-data-checkbox>
+			</view>
+			<select-index-muplt-sync title="客户标签" :v="formData.customerTag" :req="false" name="getCustomerTagAllApi"
+				v-model="formData.customerTag"></select-index-muplt-sync>
+		</view>
+
 		<view class="form_split"> --------头像(可选) -------- </view>
-		<uni-card class="form_card">
+		<view class="form_card">
 			<form>
 				<view class="cu-form-group" style="padding-top: 5px !important;">
 
-					<sunui-upimg url="http://127.0.0.1:3001/static/upload" ref="iconRef" title="上传头像"
+					<sunui-upimg url="http://192.168.5.46:3001/static/upload" ref="iconRef" title="上传头像"
 						@upload="handleLoaded" :before-upload="handleChange" :number="1">
 						<template v-slot:icon>
 							<text class="s-add-list-btn-icon">+</text>
@@ -64,16 +63,16 @@
 					</sunui-upimg>
 				</view>
 			</form>
-		</uni-card>
-		<view class="form_split"> --------头像(可选) -------- </view>
-		<uni-card class="form_card">
+		</view>
+		<view class="form_split"> --------描述(可选) -------- </view>
+		<view class="form_card">
 			<view class="cu-form-group  align-start">
 				<view class="title">描述</view>
 				<textarea maxlength="-1" v-model="formData.desc" placeholder="请输入"></textarea>
 			</view>
-		</uni-card>
-	</view>
+		</view>
 
+	</scroll-view>
 	<uni-popup ref="alertDialog" type="dialog">
 		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
 			@confirm="dialogConfirm"></uni-popup-dialog>
@@ -143,7 +142,7 @@
 
 	//权限
 	const {
-		createEnable,
+		createPowerEnable,
 		findOnePowerEnable,
 		updatePowerEnable,
 		deletePowerEnable
@@ -151,9 +150,11 @@
 
 	if (!findOnePowerEnable) {
 		errorToast(`您没有权限访问这个模块，正在为您跳转`);
-		uni.navigateBack({
-			delta: 1
-		});
+		setTimeout(() => {
+			uni.navigateTo({
+				url: "/pages/index/functions"
+			})
+		}, 1000);
 	}
 
 
@@ -292,8 +293,8 @@
 			if (res.status === 200) {
 				successToast(`删除成功，正在为您跳转`);
 				setTimeout(() => {
-					uni.navigateBack({
-						delta: 1
+					uni.navigateTo({
+						url: "/pages/customer/people/index"
 					})
 				}, 1000)
 			} else {

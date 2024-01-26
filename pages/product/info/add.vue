@@ -8,151 +8,151 @@
 			<text class="cuIcon-delete"></text> 删除
 		</button>
 	</list-header>
+	<scroll-view scroll-y="true" class="card_fixed">
+		<uni-card class="form_card" title="商品图片">
+			<sunui-upimg class="smallContent" style="margin-top: 5px !important;"
+				url="http://192.168.5.46:3001/static/upload" ref="iconRef" title="上传" @upload="handleLoaded"
+				:before-upload="handleChange" :number="9">
+				<template v-slot:icon>
+					<text class="s-add-list-btn-icon">+</text>
+				</template>
+			</sunui-upimg>
+		</uni-card>
 
+		<view class="form_card">
+			<view class="cu-form-group  align-start">
+				<view class="title">名称 *</view>
+				<textarea v-model="formData.title" placeholder="请输入名称"></textarea>
+			</view>
 
-	<uni-card class="form_card card_fixed" title="商品图片">
-		<sunui-upimg class="smallContent" style="margin-top: 5px !important;" url="http://127.0.0.1:3001/static/upload"
-			ref="iconRef" title="上传" @upload="handleLoaded" :before-upload="handleChange" :number="9">
-			<template v-slot:icon>
-				<text class="s-add-list-btn-icon">+</text>
-			</template>
-		</sunui-upimg>
-	</uni-card>
-
-	<view class="form_card">
-		<view class="cu-form-group  align-start">
-			<view class="title">名称 *</view>
-			<textarea v-model="formData.title" placeholder="请输入名称"></textarea>
+			<select-index-single-sync title="品牌" :v="formData.productType" :req="true" name="getProductTypeAllApi"
+				v-model="formData.productTypeId">
+			</select-index-single-sync>
+			<picker-muplt title="品类" :req="true" :v="formData.productCategory" name="getProductCategoryAllApi"
+				v-model="formData.productCategoryId"></picker-muplt>
+			<select-index-single-sync title="成色" :v="formData.productQuality" :req="true" otherName="desc"
+				name="getProductQualityAllApi" v-model="formData.productQualityId"></select-index-single-sync>
+			<view class="cu-form-group">
+				<view class="title">来源 *</view>
+				<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.productOriginId"
+					:localdata="originList"></uni-data-checkbox>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">来源方 *</view>
+				<input type="text" v-model="formData.originName" placeholder="请输入商品来源方" />
+			</view>
+			<select-index-single-sync title="仓库" :v="formData.productStore" :req="true"
+				name="getProductStorehouseAllApi" v-model="formData.productStoreId"></select-index-single-sync>
+			<view class="cu-form-group">
+				<view class="title">店铺编号 *</view>
+				<input type="text" v-model="formData.no" placeholder="仓库货编" />
+			</view>
 		</view>
-
-		<select-index-single-sync title="品牌" :v="formData.productType" :req="true" name="getProductTypeAllApi"
-			v-model="formData.productTypeId">
-		</select-index-single-sync>
-		<picker-muplt title="品类" :req="true" :v="formData.productCategory" name="getProductCategoryAllApi"
-			v-model="formData.productCategoryId"></picker-muplt>
-		<select-index-single-sync title="成色" :v="formData.productQuality" :req="true" otherName="desc"
-			name="getProductQualityAllApi" v-model="formData.productQualityId"></select-index-single-sync>
-		<view class="cu-form-group">
-			<view class="title">来源{{formData.productOriginId}} *</view>
-			<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.productOriginId"
-				:localdata="originList"></uni-data-checkbox>
+		<view class="form_split"> -------- 价格(可选) -------- </view>
+		<view class="form_card">
+			<view class="cu-form-group">
+				<view class="title">成本价</view>
+				<input type="number" v-model="formData.costPrice" placeholder="请输入" />
+				<text class='cuIcon-moneybag text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">销售价</view>
+				<input type="number" v-model="formData.sellingPrice" placeholder="请输入" />
+				<text class='cuIcon-moneybag text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">同行价</view>
+				<input type="number" v-model="formData.peerPrice" placeholder="请输入" />
+				<text class='cuIcon-moneybag text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">直播价</view>
+				<input type="number" v-model="formData.liveBroadcastPrice" placeholder="请输入" />
+				<text class='cuIcon-moneybag text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">专柜价</view>
+				<input type="number" v-model="formData.counterPrice" placeholder="请输入" />
+				<text class='cuIcon-moneybag text-black'></text>
+			</view>
 		</view>
-		<view class="cu-form-group">
-			<view class="title">来源方 *</view>
-			<input type="text" v-model="formData.originName" placeholder="请输入商品来源方" />
+		<view class="form_split"> -------- 其他(可选) -------- </view>
+		<view class="form_card">
+			<view class="cu-form-group">
+				<view class="title">类型</view>
+				<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.type"
+					:localdata="productTypeMap"></uni-data-checkbox>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">镭射刻印</view>
+				<input type="text" v-model="formData.laserMarking" placeholder="请输入" />
+				<text class='cuIcon-discover text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">适用人群</view>
+				<picker-single v-model="formData.forPeople" name="productForPeopleMap"></picker-single>
+			</view>
 		</view>
-		<select-index-single-sync title="仓库" :v="formData.productStore" :req="true" name="getProductStorehouseAllApi"
-			v-model="formData.productStoreId"></select-index-single-sync>
-		<view class="cu-form-group">
-			<view class="title">店铺编号 *</view>
-			<input type="text" v-model="formData.no" placeholder="仓库货编" />
-		</view>
-	</view>
-	<view class="form_split"> -------- 价格(可选) -------- </view>
-	<view class="form_card">
-		<view class="cu-form-group">
-			<view class="title">成本价</view>
-			<input type="number" v-model="formData.costPrice" placeholder="请输入" />
-			<text class='cuIcon-moneybag text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">销售价</view>
-			<input type="number" v-model="formData.sellingPrice" placeholder="请输入" />
-			<text class='cuIcon-moneybag text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">同行价</view>
-			<input type="number" v-model="formData.peerPrice" placeholder="请输入" />
-			<text class='cuIcon-moneybag text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">直播价</view>
-			<input type="number" v-model="formData.liveBroadcastPrice" placeholder="请输入" />
-			<text class='cuIcon-moneybag text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">专柜价</view>
-			<input type="number" v-model="formData.counterPrice" placeholder="请输入" />
-			<text class='cuIcon-moneybag text-black'></text>
-		</view>
-	</view>
-	<view class="form_split"> -------- 其他(可选) -------- </view>
-	<view class="form_card">
-		<view class="cu-form-group">
-			<view class="title">类型</view>
-			<uni-data-checkbox class="smallCheck" mode="tag" v-model="formData.type"
-				:localdata="productTypeMap"></uni-data-checkbox>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">镭射刻印</view>
-			<input type="number" v-model="formData.laserMarking" placeholder="请输入" />
-			<text class='cuIcon-discover text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">适用人群</view>
-			<picker-single v-model="formData.forPeople" name="productForPeopleMap"></picker-single>
-		</view>
-	</view>
-	<view class="form_card mt-10">
-		<view class="cu-form-group">
-			<view class="title">尺码</view>
-			<picker-single v-model="formData.size" name="productSizeMap"></picker-single>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">尺寸</view>
-			<input type="number" v-model="formData.sizes" placeholder="请输入" />
-			<text class='cuIcon-discover text-black'></text>
-		</view>
-		<select-index-muplt-sync title="材质" :v="formData.productMaterial" :req="false" name="getProductMaterialAllApi"
-			v-model="formData.productMaterial"></select-index-muplt-sync>
-		<view class="cu-form-group">
-			<view class="title">商品颜色</view>
-			<input type="number" v-model="formData.color" placeholder="请输入" />
-			<text class='cuIcon-colorlens text-black'></text>
-		</view>
-
-	</view>
-
-	<view class="form_card mt-10">
-		<view class="cu-form-group">
-			<view class="title">商品数量</view>
-			<input type="number" v-model="formData.count" value="1" disabled="true" placeholder="请输入" />
-			<text class='text-black'></text>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">到货时间</view>
-			<picker mode="date" :value="formData.arrivalTime" start="2024-01-01" end="2025-09-01"
-				@change="arrivalTimePickerChange">
-				<view class="picker">
-					{{formData.arrivalTime}}
-				</view>
-			</picker>
-		</view>
-		<view class="cu-form-group">
-			<view class="title">入库时间</view>
-			<picker mode="date" :value="formData.inTime" start="2024-01-01" end="2025-09-01"
-				@change="inTimePickerChange">
-				<view class="picker">
-					{{formData.inTime}}
-				</view>
-			</picker>
-		</view>
-		<select-index-single-sync :v="formData.user" title="买手" :req="false" name="getAllUserApi"
-			v-model="formData.buyer"></select-index-single-sync>
-		<select-index-muplt-sync :v="formData.productTag" title="标签" :req="false" name="getProductTagAllApi"
-			v-model="formData.productTag"></select-index-muplt-sync>
-		<select-index-muplt-sync :v="formData.productAttach" title="附件" :req="false" name="getProductAttachAllApi"
-			v-model="formData.productAttach"></select-index-muplt-sync>
-
-		<view class="cu-form-group  align-start">
-			<view class="title">备注</view>
-			<textarea maxlength="-1" v-model="formData.description" placeholder="请输入"></textarea>
-		</view>
-		<view style="height:30rpx">
+		<view class="form_card mt-10">
+			<view class="cu-form-group">
+				<view class="title">尺码</view>
+				<picker-single v-model="formData.size" name="productSizeMap"></picker-single>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">尺寸</view>
+				<input type="text" v-model="formData.sizes" placeholder="请输入" />
+				<text class='cuIcon-discover text-black'></text>
+			</view>
+			<select-index-muplt-sync title="材质" :v="formData.productMaterial" :req="false"
+				name="getProductMaterialAllApi" v-model="formData.productMaterial"></select-index-muplt-sync>
+			<view class="cu-form-group">
+				<view class="title">商品颜色</view>
+				<input type="text" v-model="formData.color" placeholder="请输入" />
+				<text class='cuIcon-colorlens text-black'></text>
+			</view>
 
 		</view>
-	</view>
 
+		<view class="form_card mt-10">
+			<view class="cu-form-group">
+				<view class="title">商品数量</view>
+				<input type="number" v-model="formData.count" disabled="true" placeholder="请输入" />
+				<text class='text-black'></text>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">到货时间</view>
+				<picker mode="date" :value="formData.arrivalTime" start="2024-01-01" end="2025-09-01"
+					@change="arrivalTimePickerChange">
+					<view class="picker">
+						{{formData.arrivalTime}}
+					</view>
+				</picker>
+			</view>
+			<view class="cu-form-group">
+				<view class="title">入库时间</view>
+				<picker mode="date" :value="formData.inTime" start="2024-01-01" end="2025-09-01"
+					@change="inTimePickerChange">
+					<view class="picker">
+						{{formData.inTime}}
+					</view>
+				</picker>
+			</view>
+			<select-index-single-sync :v="formData.user" title="买手" :req="false" name="getAllUserApi"
+				v-model="formData.buyer"></select-index-single-sync>
+			<select-index-muplt-sync :v="formData.productTag" title="标签" :req="false" name="getProductTagAllApi"
+				v-model="formData.productTag"></select-index-muplt-sync>
+			<select-index-muplt-sync :v="formData.productAttach" title="附件" :req="false" name="getProductAttachAllApi"
+				v-model="formData.productAttach"></select-index-muplt-sync>
+
+			<view class="cu-form-group  align-start">
+				<view class="title">备注</view>
+				<textarea maxlength="-1" v-model="formData.description" placeholder="请输入"></textarea>
+			</view>
+			<view style="height:30rpx">
+
+			</view>
+		</view>
+	</scroll-view>
 	<uni-popup ref="alertDialog" type="dialog">
 		<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" content="删除以后不可恢复, 确认删除?"
 			@confirm="dialogConfirm"></uni-popup-dialog>
@@ -164,7 +164,7 @@
 	import {
 		isLogin
 	} from '@/common/login';
-
+	import youScroll from "@/components/you-scroll.vue"
 	import pickerSingle from "@/components/pickerSingle.vue";
 	import selectIndexSingleSync from "@/components/selectIndexSingleSync.vue";
 	import selectIndexMupltSync from "@/components/selectIndexMupltSync.vue";
@@ -212,7 +212,7 @@
 
 	//权限
 	const {
-		createEnable,
+		createPowerEnable,
 		findOnePowerEnable,
 		updatePowerEnable,
 		deletePowerEnable
@@ -220,16 +220,20 @@
 
 	if (!findOnePowerEnable) {
 		errorToast(`您没有权限访问这个模块，正在为您跳转`);
-		uni.navigateBack({
-			delta: 1
-		});
+		setTimeout(() => {
+			uni.navigateTo({
+				url: "/pages/index/functions"
+			})
+		}, 1000);
 	}
 
 	if (!findOnePowerEnable) {
 		errorToast(`您没有权限访问这个模块，正在为您跳转`);
-		uni.navigateBack({
-			delta: 1
-		});
+		setTimeout(() => {
+			uni.navigateTo({
+				url: "/pages/index/functions"
+			})
+		}, 1000);
 	}
 
 
@@ -318,7 +322,8 @@
 
 	const formData = ref({
 		inTime: moment().format('YYYY-MM-DD'),
-		arrivalTime: moment().format('YYYY-MM-DD')
+		arrivalTime: moment().format('YYYY-MM-DD'),
+		count: 1
 	});
 	const getOne = function(id) {
 		return getProductInfoOneApi(id).then(res => {

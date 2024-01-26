@@ -1,7 +1,7 @@
 <template>
 	<view class="outer">
 		<div class="main">
-			<uni-section class="mt-30" title="忘记密码" sub-title="奢小墩" type="line">
+			<uni-section class="pt-30" title="忘记密码" sub-title="奢小墩" type="line">
 				<view class="uni-padding-wrap">
 					<uni-forms-item class=" mt-30">
 						<uni-easyinput class="input-border-bottom " type="number" :inputBorder="false" v-model="phone"
@@ -37,12 +37,12 @@
 		errorToast,
 		loadingToast,
 		successToast
-	} from '../../common/toastHelper';
+	} from '@/common/toastHelper';
 	import * as crypto from 'crypto-js'
 	import cCode from "@/components/cCode.vue"
 	import {
 		forgetPwdApi
-	} from '../../api/outer';
+	} from '@/api/outer';
 	export default {
 		components: {
 			cCode
@@ -57,8 +57,8 @@
 		},
 		methods: {
 			backToLogin() {
-				uni.redirectTo({
-					url: "login"
+				uni.navigateTo({
+					url: "/pages/outer/login"
 				})
 			},
 			forget() {
@@ -88,7 +88,7 @@
 				}).then(res => {
 					if (res.status == 200) {
 						successToast("修改密码成功, 为您跳转到登录");
-						uni.redirectTo({
+						uni.navigateTo({
 							url: '/pages/outer/login'
 						})
 					} else {

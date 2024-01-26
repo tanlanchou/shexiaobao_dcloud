@@ -279,6 +279,22 @@
 					"titleNView": false
 				}
 			}
+		},
+		{
+			"path": "pages/order/channels/index",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},
+		{
+			"path": "pages/order/channels/add",
+			"style": {
+				"app-plus": {
+					"titleNView": false
+				}
+			}
 		}
 	],
 	"globalStyle": {

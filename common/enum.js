@@ -66,3 +66,26 @@ export const productOrderSearch = ["入库时间降序", "入库时间升序", "
 	"同行价升序", "直播价降序", "直播价升序", "专柜价降序", "专柜价升序"
 ];
 export const userOrderSearch = ["创建时间降序", "创建时间升序", "登录时间降序", "登录时间降序"];
+export const expressStatusMap = [{
+	text: "未发货",
+	value: 1
+}, {
+	text: "已发货",
+	value: 2,
+}];
+
+export const orderStatusMap = [{
+	text: "撤回",
+	value: 2
+}, {
+	text: "正常",
+	value: 1,
+}];
+
+export const prodcutStatusMap = [{
+	text: "入库",
+	value: 2
+}, {
+	text: "出库",
+	value: 3,
+}]

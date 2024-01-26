@@ -27,6 +27,14 @@ export const getMenusGroupByType = function() {
 
 export const checkPower = function(key) {
 	if (!powers) powers = getPowerStorage();
+	if (key == 'RoleController_create') {
+		console.log(`--------------------`)
+		console.log(powers);
+		const result = powers.find(item => item.powerName == key)
+		console.log(result);
+		console.log(!!result);
+		console.log(`--------------------`)
+	}
 	const result = powers.find(item => item.powerName == key)
 	return !!result;
 }
@@ -38,7 +46,8 @@ export const checkPowerCommon = function(key) {
 	const findOnePowerName = `${powerBase}_findOne`;
 	const updatePowerName = `${powerBase}_update`;
 	const deletePowerName = `${powerBase}_delete`;
-
+	console.log("createPowerName", createPowerName);
+	console.log("checkPower(createPowerName)", checkPower(createPowerName))
 	return {
 		findAllPowerEnable: checkPower(findAllPowerName),
 		createPowerEnable: checkPower(createPowerName),

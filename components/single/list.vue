@@ -1,19 +1,24 @@
 <template>
+	<view class="status_bar"></view>
 	<view class="DrawerPage" :class="modalName=='viewModal'?'show':''">
 		<list-header :title="title">
-
-
-			<button class="cu-btn bg-green" style="margin-right: 5px;" @click="showModal" data-target="viewModal">
+			<!-- 			<button class="cu-btn bg-green" style="margin-right: 5px;" @click="showModal" data-target="viewModal">
 				<text class="cuIcon-filter"></text> 筛选
-			</button>
+			</button> -->
+			<template v-slot:default>
+				<button class="cu-btn bg-purple" v-if="createPowerEnable" @click="add">
+					<text class="cuIcon-add"></text> 添加
+				</button>
+			</template>
+			<template v-slot:search>
+				<uni-search-bar @confirm="search" :focus="true" v-model="search.name" @input="doSearch">
+				</uni-search-bar>
+			</template>
 
-			<button class="cu-btn bg-purple" v-if="createPowerEnable" @click="add">
-				<text class="cuIcon-add"></text> 添加
-			</button>
 		</list-header>
 
 		<you-scroll @onPullDown="onPullDown" scroll-y="true">
-			<view class="cu-list menu sm-border card-menu mt-10">
+			<view class="cu-list menu sm-border">
 				<template v-for="(item, index) in list" :key="index">
 					<view class="cu-item" @click="findOnePowerEnable && jumpToUserDetail(item)">
 						<view class="content padding-tb-sm">
@@ -37,7 +42,7 @@
 	<scroll-view scroll-y class="DrawerWindow" :class="modalName=='viewModal'?'show':''">
 		<uni-card>
 			<uni-section title="名称" type="line">
-				<uni-easyinput class="input-border-bottom " type="text" :inputBorder="false" v-model="search.name"
+				<uni-easyinput class="input-border-bottom" type="text" :inputBorder="false" v-model="search.name"
 					placeholder="名称" prefix-icon="contact"></uni-easyinput>
 			</uni-section>
 			<view class="mt-10">
@@ -74,6 +79,9 @@
 		onShow
 	} from "@dcloudio/uni-app";
 	import youScroll from "@/components/you-scroll.vue"
+	import {
+		throttle
+	} from "../../common/common";
 
 	isLogin();
 
@@ -91,9 +99,11 @@
 
 	if (!props.options || !props.options.name) {
 		errorToast(`单个名称组件参数错误`);
-		// uni.navigateBack({
-		// 	delta: 1
-		// })
+		setTimeout(() => {
+			uni.navigateBack({
+				delta: 1
+			})
+		}, 1000);
 	}
 
 	//权限处理
@@ -105,9 +115,11 @@
 	const deletePowerName = _.get(props, "options.power.delete") || `${powerBase}_delete`;
 	if (!checkPower(findAllPowerName)) {
 		errorToast(`您没有权限访问这个模块`);
-		// uni.navigateBack({
-		// 	delta: 1
-		// })
+		setTimeout(() => {
+			uni.navigateBack({
+				delta: 1
+			})
+		}, 1000);
 	}
 
 	const createPowerEnable = ref(checkPower(createPowerName));
@@ -143,6 +155,10 @@
 	const onPullDown = function(done) {
 		init(done);
 	}
+
+	const doSearch = throttle(function() {
+		init();
+	}, 1000);
 
 	const init = function(done) {
 		getList({

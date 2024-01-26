@@ -21,6 +21,9 @@
 		getProductAttachAllApi
 	} from "@/api/product.info";
 	import {
+		getSalesChannelsAllInfoApi
+	} from "@/api/salesChannels.js"
+	import {
 		getCustomerTagAllApi
 	} from "@/api/customerTag";
 	import indexSelect from '@/components/indexSelect.vue'
@@ -46,7 +49,8 @@
 		getProductMaterialAllApi,
 		getProductTagAllApi,
 		getProductAttachAllApi,
-		getCustomerTagAllApi
+		getCustomerTagAllApi,
+		getSalesChannelsAllInfoApi
 	}
 
 	const props = defineProps({

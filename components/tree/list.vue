@@ -1,19 +1,24 @@
 <template>
+	<view class="status_bar"></view>
 	<view class="DrawerPage" :class="modalName=='viewModal'?'show':''">
 		<list-header :title="title">
+			<template v-slot:default>
+				<button class="cu-btn bg-green" style="margin-right: 5px;" @click="showModal" data-target="viewModal">
+					<text class="cuIcon-filter"></text> 筛选
+				</button>
 
-
-			<button class="cu-btn bg-green" style="margin-right: 5px;" @click="showModal" data-target="viewModal">
-				<text class="cuIcon-filter"></text> 筛选
-			</button>
-
-			<button class="cu-btn bg-purple" v-if="createPowerEnable" @click="add">
-				<text class="cuIcon-add"></text> 添加
-			</button>
+				<button class="cu-btn bg-purple" v-if="createPowerEnable" @click="add">
+					<text class="cuIcon-add"></text> 添加
+				</button>
+			</template>
+			<template v-slot:search>
+				<uni-search-bar @confirm="search" :focus="true" v-model="search.name" @input="doSearch">
+				</uni-search-bar>
+			</template>
 		</list-header>
 
 		<you-scroll @onPullDown="onPullDown" scroll-y="true">
-			<view class="cu-list menu sm-border card-menu mt-10">
+			<view class="cu-list menu sm-border">
 				<template v-for="(item, index) in list" :key="index">
 					<view class="cu-item" @click="findOnePowerEnable && jumpToUserDetail(item)">
 						<view class="content padding-tb-sm">
@@ -42,17 +47,16 @@
 			v-model="formData.parentId">
 		</select-index-single-sync> -->
 		<view class="search_body form_card">
-			<view class="cu-form-group ">
+			<!-- 			<view class="cu-form-group ">
 				<view class="title">名称</view>
 				<input type="text" v-model="search.name" placeholder="请输入" />
-			</view>
+			</view> -->
 			<select-index-single-sync ref="parentIdSearchRef" title="父节点" :req="false"
 				:name="_.get(props, 'options.request.findAll') || '/' +_.get(props, 'options.name') + '?pid=0'"
 				v-model="search.parentId">
 			</select-index-single-sync>
-		</view>
-		<uni-card>
-			<view class="mt-10">
+			<view style="text-align: center;" class='mt-10'>
+				&nbsp;
 				<button class="cu-btn bg-purple" @click="init()">
 					<text class="cuIcon-filter"></text> 筛选
 				</button>
@@ -60,8 +64,11 @@
 				<button class="cu-btn bg-red" @click="clear">
 					<text class="cuIcon-refresh"></text> 清空
 				</button>
+				&nbsp;
 			</view>
-		</uni-card>
+		</view>
+
+
 	</scroll-view>
 </template>
 
@@ -90,6 +97,9 @@
 	import {
 		parseAndSort
 	} from "../../common/tree";
+	import {
+		throttle
+	} from "../../common/common";
 
 	isLogin();
 
@@ -107,9 +117,11 @@
 
 	if (!props.options || !props.options.name) {
 		errorToast(`单个名称组件参数错误`);
-		uni.navigateBack({
-			delta: 1
-		})
+		setTimeout(() => {
+			uni.navigateBack({
+				delta: 1
+			})
+		}, 1000);
 	}
 
 	//权限处理
@@ -121,9 +133,11 @@
 	const deletePowerName = _.get(props, "options.power.delete") || `${powerBase}_delete`;
 	if (!checkPower(findAllPowerName)) {
 		errorToast(`您没有权限访问这个模块`);
-		uni.navigateBack({
-			delta: 1
-		})
+		setTimeout(() => {
+			uni.navigateBack({
+				delta: 1
+			})
+		});
 	}
 
 	const createPowerEnable = ref(checkPower(createPowerName));
@@ -151,6 +165,10 @@
 			isValid: true
 		});
 	}
+
+	const doSearch = throttle(() => {
+		init()
+	}, 1000)
 
 
 	const getListByPage = function() {

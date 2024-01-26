@@ -1,7 +1,7 @@
 <template>
 	<view class="outer">
 		<div class="main">
-			<uni-section class="mt-30" title="欢迎登录" sub-title="奢小墩" type="line">
+			<uni-section class="pt-30" title="欢迎登录" sub-title="奢小墩" type="line">
 				<view class="uni-padding-wrap mt-30">
 					<uni-segmented-control :current="current" :values="items" :style-type="styleType"
 						active-color="#007aff" @clickItem="onClickItem" />
@@ -27,8 +27,8 @@
 								@click='login'>登录</button>
 
 							<view class="mt-20" style="text-align: right;">
-								<a href="javascript:;" @click="gotoRegister">注册</a> &nbsp;&nbsp; <a href="javascript;"
-									@click="gotoForget">忘记密码？</a>
+								<a href="javascript:;" class="text_no_link" @click="gotoRegister">注册</a> &nbsp;&nbsp; <a
+									href="javascript;" class="text_no_link" @click="gotoForget">忘记密码？</a>
 							</view>
 						</uni-card>
 					</view>
@@ -47,13 +47,10 @@
 							<button size="default" type="default"
 								style="color:#ffffff;backgroundColor:#1AAD19;borderColor:#1AAD19" hover-class="is-hover"
 								@click='loginWithSms'>登录</button>
-							<view>
-								注册
-							</view>
 							<view class="mt-20" style="text-align: right;">
-								<a href="javascript:;" @click="gotoRegister">注册</a>
+								<a href="javascript:;" class="text_no_link" @click="gotoRegister">注册</a>
 								&nbsp;&nbsp;
-								<a href="javascript;" @click="gotoForget">忘记密码？</a>
+								<a href="javascript;" class="text_no_link" @click="gotoForget">忘记密码？</a>
 							</view>
 						</uni-card>
 					</view>
@@ -111,13 +108,13 @@
 				}
 			},
 			gotoForget() {
-				uni.redirectTo({
-					url: "forget"
+				uni.navigateTo({
+					url: "/pages/outer/forget"
 				})
 			},
 			gotoRegister() {
-				uni.redirectTo({
-					url: "register"
+				uni.navigateTo({
+					url: "/pages/outer/register"
 				})
 			},
 			loginWithSms() {
@@ -140,7 +137,7 @@
 						setToken(token);
 						successToast("登录成功，正在为您跳转");
 						setTimeout(() => {
-							uni.redirectTo({
+							uni.navigateTo({
 								url: "/pages/index/index"
 							})
 						}, 1000);
@@ -170,7 +167,7 @@
 						setToken(token);
 						successToast("登录成功，正在为您跳转");
 						setTimeout(() => {
-							uni.redirectTo({
+							uni.navigateTo({
 								url: "/pages/index/index"
 							})
 						}, 1000);

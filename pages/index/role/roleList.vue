@@ -1,4 +1,5 @@
 <template>
+	<view class="status_bar"></view>
 	<list-header title="角色列表">
 		<button class="cu-btn bg-purple" @click="jumpToRoleAdd">
 			<text class="cuIcon-add"></text> 添加

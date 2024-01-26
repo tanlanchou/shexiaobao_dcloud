@@ -18,7 +18,10 @@
 	} from 'vue';
 	import {
 		getProductCategoryAllApi
-	} from '../api/product.info';
+	} from '@/api/product.info';
+	import {
+		getSalesChannelsAllInfoApi
+	} from '@/api/salesChannels';
 
 	const props = defineProps({
 		name: {
@@ -45,7 +48,8 @@
 
 	//集合
 	const a = {
-		getProductCategoryAllApi
+		getProductCategoryAllApi,
+		getSalesChannelsAllInfoApi
 	}
 
 	const emit = defineEmits(['update:modelValue']);
@@ -100,11 +104,10 @@
 	function clear() {
 		formCategory.value = {};
 	}
-	
+
 	defineExpose({
 		clear
 	})
-
 </script>
 
 <style>

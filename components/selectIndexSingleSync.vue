@@ -31,6 +31,10 @@
 	import {
 		getCustomerTagAllApi
 	} from "@/api/customerTag";
+	import {
+		getCustomerAllApi
+	} from "../api/customer";
+
 
 
 
@@ -59,7 +63,8 @@
 		getProductAttachAllApi,
 		getAllRoleApi,
 		getOriginAllApi,
-		getCustomerTagAllApi
+		getCustomerTagAllApi,
+		getCustomerAllApi
 	}
 
 	const props = defineProps({
@@ -89,6 +94,10 @@
 		v: {
 			type: Object,
 			required: false
+		},
+		isObject: {
+			type: Boolean,
+			default: false
 		}
 	});
 
@@ -128,10 +137,11 @@
 				}
 				typeList.value = result;
 			} else {
-				errorToast(res.message || `获取品牌错误`)
+				errorToast(res.message || `获取${props.title}错误`)
 			}
 		}).catch(res => {
-			errorToast(res.message || `获取品牌错误`)
+			errorToast(res.message || `获取${props.title}错误`)
+			console.error(res);
 		});
 	}
 
@@ -169,7 +179,7 @@
 
 			if (result) {
 				formType.value = result;
-				emit('update:modelValue', result.id);
+				emit('update:modelValue', props.isObject ? result : result.id);
 			} else {
 				errorToast("数据格式出错, 请刷新后重试");
 			}

@@ -80,7 +80,22 @@
 		background-color: #f1f1f1;
 	}
 
+	.default_body {
+		background-color: #f1f1f1;
+	}
+
+	.text_no_link {
+		text-decoration: none;
+		color: #6a6a6a;
+	}
+
 	//header
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
+		background-color: #f1f1f1;
+	}
+
 	.header_fixed {
 		position: fixed;
 		top: 0;
@@ -133,6 +148,20 @@
 		text-align: left;
 	}
 
+	.search_action_top {
+		position: fixed;
+		top: 0.5rem;
+		width: 100%;
+		height: auto;
+		text-align: left;
+		padding: 0 30px 0 0;
+	}
+
+	//uni-card__content
+	.DrawerWindow .uni-card__content {
+		padding: 0 !important;
+	}
+
 	//input
 
 	// 内部样式重载
@@ -145,7 +174,7 @@
 		word-break: break-all;
 		margin: 15px 15px;
 	}
-	
+
 	.uni-calendar .dialog-close {
 		display: none !important;
 	}
@@ -182,6 +211,10 @@
 		margin-top: 10px !important;
 	}
 
+	.pt-30 {
+		padding-top: 30px !important;
+	}
+
 	.uni-padding-wrap {
 		padding: 0px 30px;
 	}
@@ -189,7 +222,7 @@
 	.input-border-bottom {
 		border-bottom: 1px solid #dddddd;
 	}
-	
+
 	// form
 	.form_list {
 		text-align: right;
@@ -214,13 +247,20 @@
 	}
 
 	.card_fixed {
-		margin-top: 60px !important;
+		margin-top: calc(var(--status-bar-height) + 100rpx) !important;
+		height: 100vh;
+		padding-bottom: calc(var(--status-bar-height) + 120rpx + var(--window-bottom));
 	}
-	
+
+	.card_fixed_50 {
+		margin-top: 50px !important;
+	}
+
+
 	.form_card .uni-card__content .cu-form-group input {
 		text-align: right;
 	}
-	
+
 
 
 	// button
@@ -231,6 +271,10 @@
 	}
 
 	.outer {
+
+		background-color: #fff;
+		height: 100vh;
+
 		.main {
 			width: 100%;
 			height: 100%;
@@ -275,6 +319,15 @@
 		transition: all 0.4s;
 	}
 
+	.DrawerPage_NoFixed {
+		position: fixed;
+		width: 100vw;
+		height: 100vh;
+		left: 0vw;
+		background-color: #f1f1f1;
+		transition: all 0.4s;
+	}
+
 	.DrawerPage.show {
 		transform: scale(0.9, 0.9);
 		left: 85vw;
@@ -293,6 +346,10 @@
 		pointer-events: none;
 		transition: all 0.4s;
 		padding: 100upx 0;
+	}
+
+	.DrawerWindow-top-search {
+		padding: 7.5rem 0 0 0 !important;
 	}
 
 	.DrawerWindow.show {

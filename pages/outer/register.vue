@@ -1,7 +1,7 @@
 <template>
 	<view class="outer">
 		<div class="main">
-			<uni-section class="mt-30" title="欢迎注册" sub-title="奢小墩" type="line">
+			<uni-section class="pt-30" title="欢迎注册" sub-title="奢小墩" type="line">
 				<view class="uni-padding-wrap">
 					<uni-forms-item class=" mt-30">
 						<uni-easyinput class="input-border-bottom " type="number" :inputBorder="false" v-model="phone"
@@ -65,7 +65,7 @@
 		},
 		methods: {
 			backToLogin() {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: "login"
 				})
 			},
@@ -101,7 +101,7 @@
 				}).then(res => {
 					if (res.status == 200) {
 						successToast("注册成功, 为您跳转到登录");
-						uni.redirectTo({
+						uni.navigateTo({
 							url: '/pages/outer/login'
 						})
 					} else {

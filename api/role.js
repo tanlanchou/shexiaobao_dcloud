@@ -18,6 +18,15 @@ export const addRoleApi = function(data) {
 	})
 }
 
+export const deleteRoleApi = function(id) {
+	return request({
+		url: `/role/${id}`,
+		method: `delete`,
+		isValid: true
+	})
+}
+
+
 export const editRoleApi = function(id, data) {
 	return request({
 		url: `/role/${id}`,

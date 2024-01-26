@@ -8,7 +8,7 @@ export const getCustomerOneApi = function(id) {
 	})
 }
 
-export const getCustomerAllApi = function(id) {
+export const getCustomerAllApi = function() {
 	return request({
 		url: `/customer`,
 		method: `get`,

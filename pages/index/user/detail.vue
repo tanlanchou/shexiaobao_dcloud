@@ -1,11 +1,11 @@
 <template>
-
-	<list-header title="用户详情">
+	<view class="status_bar"></view>
+	<list-header class="header_fixed" title="用户详情">
 		<button class="cu-btn bg-purple" @click="update">
 			<text class="cuIcon-add"></text> 提交
 		</button>
 	</list-header>
-	<uni-card>
+	<uni-card class="card_fixed">
 		<view class="form_list">
 			<view class="cu-form-group">
 				<view class="title">昵称 *</view>
@@ -119,9 +119,9 @@
 					if (res.status == 200) {
 						successToast(`提交用户数据成功`);
 						setTimeout(() => {
-							uni.navigateBack({
-								delta: 1
-							});
+							uni.navigateTo({
+								url: "/pages/index/user/list"
+							})
 						}, 1000);
 					} else {
 						errorToast(res.message || "提交用户数据失败1")
